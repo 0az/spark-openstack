@@ -39,14 +39,6 @@
       include_role:
         name: cassandra
       when: deploy_cassandra
-    - name: prepare ignite
-      include_role:
-        name: ignite_prepare
-      when: deploy_ignite
-    - name: config ignite
-      include_role:
-        name: ignite_config
-      when: deploy_ignite
     - name: mountnfs
       include_role:
         name: mountnfs
@@ -72,55 +64,3 @@
       vars:
         python_version: 3
       when: deploy_jupyterhub
-
-- hosts: "{{ cluster_name }}_master"
-  become: yes
-  tasks:
-    - include_role:
-        name: elasticsearch
-      vars:
-        es_instance_name: "{{ cluster_name }}"
-        es_heap_size: "{{ es_heap_size }}"
-        es_java_install: false
-        es_config:
-          cluster:
-            name: "{{ cluster_name }}"
-            initial_master_nodes: "{{ active_master_ip }}"
-          http:
-            port: 9200
-          transport:
-            port: 9300
-          node:
-            data: false
-            master: "true"
-          network:
-            host: "0"
-          discovery:
-            seed_hosts: "{{ active_master_ip }}"
-      when: deploy_elastic
-
-- hosts: "{{ cluster_name }}_slaves"
-  become: yes
-  tasks:
-    - include_role:
-        name: elasticsearch
-      vars:
-        es_instance_name: "{{ cluster_name }}"
-        es_data_dirs: "/opt/elasticsearch"
-        es_java_install: false
-        es_config:
-          cluster:
-            name: "{{ cluster_name }}"
-            initial_master_nodes: "{{ active_master_ip }}"
-          http:
-            port: 9200
-          transport:
-            port: 9300
-          node:
-            data: false
-            master: "false"
-          network:
-            host: "0"
-          discovery:
-            seed_hosts: "{{ active_master_ip }}"
-      when: deploy_elastic
