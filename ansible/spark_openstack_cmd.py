@@ -46,6 +46,12 @@ toree_versions = {
     "3": "https://www.apache.org/dist/incubator/toree/0.3.0-incubating/toree-pip/toree-0.3.0.tar.gz",
 }
 
+
+def abort(msg, status=1):
+    print(msg, file=sys.stderr)
+    sys.exit(status)
+
+
 parser = argparse.ArgumentParser(
     description='Spark cluster deploy tools for Openstack.',
     formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -223,10 +229,7 @@ if args.master_instance_type is None:
     args.master_instance_type = args.instance_type
 
 if "_" in args.cluster_name:
-    print(
-        "WARNING: '_' symbols in cluster name are not supported, replacing with '-'"
-    )
-    args.cluster_name = args.cluster_name.replace('_', '-')
+    abort("Underscores in cluster name are not supported")
 
 ansible_cmd = "ansible"
 ansible_playbook_cmd = "ansible-playbook"
@@ -300,18 +303,9 @@ def make_extra_vars():
     extra_vars["os_project_name"] = os.getenv('OS_PROJECT_NAME') or os.getenv(
         'OS_TENANT_NAME'
     )
-    if not extra_vars["os_project_name"]:
-        print(
-            "It seems that you h aven't sources your Openstack OPENRC file; quiting"
-        )
-        exit(-1)
-
     extra_vars["os_auth_url"] = os.getenv('OS_AUTH_URL')
-    if not extra_vars["os_auth_url"]:
-        print(
-            "It seems that you haven't sources your Openstack OPENRC file; quiting"
-        )
-        exit(-1)
+    if not extra_vars["os_project_name"] or not extra_vars["os_auth_url"]:
+        abort("Please source your OpenStack openrc file", -1)
 
     extra_vars["hadoop_user"] = args.hadoop_user
     if args.act == 'launch':
@@ -324,10 +318,10 @@ def make_extra_vars():
                 args.hadoop_version
                 not in spark_versions[args.spark_version]["hadoop_versions"]
             ):
-                print(
-                    "Chosen Spark version doesn't support selected Hadoop version"
+                abort(
+                    "The chosen Spark version doesn't support the selected Hadoop version!",
+                    -1,
                 )
-                exit(-1)
             extra_vars["hadoop_version"] = args.hadoop_version
         else:
             extra_vars["hadoop_version"] = spark_versions[args.spark_version][
@@ -411,22 +405,17 @@ def make_extra_vars():
     return extra_vars
 
 
-def err(msg):
-    print(msg, file=sys.stderr)
-    sys.exit(1)
-
-
 def parse_host_ip(resp):
     """parse ansible debug output with var=hostvars[inventory_hostname].ansible_ssh_host and return host"""
     parts1 = resp.split("=>")
     if len(parts1) != 2:
-        err("unexpected ansible output")
+        abort("unexpected ansible output")
     parts2 = parts1[1].split(":")
     if len(parts2) != 3:
-        err("unexpected ansible output")
+        abort("unexpected ansible output")
     parts3 = parts2[1].split('"')
     if len(parts3) != 3:
-        err("unexpected ansible output")
+        abort("unexpected ansible output")
     return parts3[1]
 
 
@@ -522,4 +511,4 @@ elif args.act == "runner":
     runner_ip = get_ip('runner')
     print("Runner ready; IP is %s" % (runner_ip))
 else:
-    err("unknown action: " + args.act)
+    abort("unknown action: " + args.act)
