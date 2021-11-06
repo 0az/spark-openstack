@@ -12,7 +12,7 @@ import urllib
 from shutil import rmtree
 from zipfile import ZipFile
 
-import urlparse
+from urllib.parse import urlparse
 
 spark_versions = {
     "2.4.4": {"hadoop_versions": ["2.7", "3.0", "3.1"]},
