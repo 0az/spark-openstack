@@ -211,6 +211,7 @@ parser.add_argument(
 parser.add_argument(
     "--async",
     action="store_true",
+    dest='async_',
     help="Async Openstack operations (may not work with some Openstack environments)",
 )
 parser.add_argument("--tags", help="Ansible: run specified tags")
@@ -370,7 +371,7 @@ def make_extra_vars():
 
     extra_vars["skip_packages"] = args.skip_packages
 
-    extra_vars["sync"] = "async" if args.async else "sync"
+    extra_vars["sync"] = "async" if args.async_ else "sync"
 
     if args.extra_jars is None:
         args.extra_jars = []
