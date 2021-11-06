@@ -69,14 +69,14 @@ parser.add_argument("-s", "--slaves", type=int)
 parser.add_argument(
     "-n",
     "--virtual-network",
-    help="Your virtual Openstack network id for cluster. If have only one network, you may not specify it",
+    help="Your virtual Openstack network id for cluster. If the cluster has only one network, you may not specify it",
 )
 parser.add_argument("-f", "--floating-ip-pool", help="Floating IP pool")
 parser.add_argument("-t", "--instance-type")
 parser.add_argument(
     "-m",
     "--master-instance-type",
-    help="master instance type, defaults to same as slave instance type",
+    help="master instance type, defaults to slave instance type",
 )
 parser.add_argument("-a", "--image-id")
 parser.add_argument("-w", help="ignored")
@@ -87,7 +87,7 @@ parser.add_argument(
 parser.add_argument(
     "--deploy-spark",
     action="store_true",
-    help="Should we deploy Spark (with Hadoop)",
+    help="Request Spark deployment (using Hadoop)",
 )
 parser.add_argument(
     "--mountnfs", action="store_true", help="Should we run mountnfs"
@@ -100,28 +100,28 @@ parser.add_argument(
 parser.add_argument(
     "--spark-worker-mem-mb",
     type=int,
-    help="force worker memory value in megabytes (e.g. 14001)",
+    help="Force worker memory value in megabytes (e.g. 14001)",
 )
 parser.add_argument(
     "-j",
     "--deploy-jupyter",
     action='store_true',
-    help="Should we deploy jupyter on master node.",
+    help="Request Jupyter deployment on master node.",
 )
 parser.add_argument(
     "-jh",
     "--deploy-jupyterhub",
     action='store_true',
-    help="Should we deploy jupyterHub on master node",
+    help="Request JupyterHub deployment on master node",
 )
 parser.add_argument(
-    "--spark-version", default="1.6.2", help="Spark version to use"
+    "--spark-version", default="2.4.4", help="Spark version to use"
 )
 parser.add_argument("--hadoop-version", help="Hadoop version to use")
 parser.add_argument(
     "--boot-from-volume",
     default=False,
-    help="Should the cluster be based on Cinder volumes. " "Use it wisely",
+    help="Boot cluster from Cinder volume.",
 )
 parser.add_argument(
     "--hadoop-user",
@@ -129,7 +129,9 @@ parser.add_argument(
     help="User to use/create for cluster members",
 )
 parser.add_argument(
-    "--ansible-bin", help="path to ansible (and ansible-playbook, default='')"
+    "--ansible-bin",
+    help="Path to ansible and ansible-playbook",
+    default='',
 )
 parser.add_argument(
     "--swift-username",
@@ -148,7 +150,7 @@ parser.add_argument(
     default=[],
     nargs=2,
     metavar=("<nfs-path>", "<mount-path>"),
-    help="Should we mount some NFS share(s) on instances",
+    help="Mount NFS share(s) on instances",
     action='append',
 )
 parser.add_argument(
@@ -187,12 +189,12 @@ parser.add_argument(
 parser.add_argument(
     "--deploy-cassandra",
     action='store_true',
-    help="Should we deploy Apache Cassandra",
+    help="Request Apache Cassandra deployment",
 )
 parser.add_argument(
     "--cassandra-version",
     default="3.11.4",
-    help="Apache Cassandra version to use",
+    help="Apache Cassandra version",
 )
 parser.add_argument(
     "--skip-packages",
@@ -207,8 +209,6 @@ parser.add_argument(
 parser.add_argument("--tags", help="Ansible: run specified tags")
 parser.add_argument("--skip-tags", help="Ansible: skip specified tags")
 
-
-# parser.add_argument("--step", action="store_true", help="Execute play step-by-step")
 
 args, unknown = parser.parse_known_args()
 if args.tags is not None:
