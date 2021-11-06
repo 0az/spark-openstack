@@ -44,6 +44,7 @@ toree_versions = {
     "1": "https://www.apache.org/dist/incubator/toree/0.1.0-incubating/toree-pip/apache-toree-0.1.0.tar.gz",
     "2": "https://www.apache.org/dist/incubator/toree/0.2.0-incubating/toree-pip/toree-0.2.0.tar.gz",
     "3": "https://www.apache.org/dist/incubator/toree/0.3.0-incubating/toree-pip/toree-0.3.0.tar.gz",
+    "4": "https://www.apache.org/dist/incubator/toree/0.4.0-incubating/toree-pip/toree-0.4.0.tar.gz",
 }
 
 
