@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import print_function
-
 import argparse
 import os
 import subprocess
 import sys
 import urllib
-from shutil import rmtree
 from zipfile import ZipFile
 
 from urllib.parse import urlparse
@@ -419,24 +416,6 @@ def err(msg):
     sys.exit(1)
 
 
-# def parse_host_ip(resp):
-#     """parse ansible debug output with var=hostvars[inventory_hostname].ansible_ssh_host and return host"""
-#     parts1 = resp.split("=>")
-#     if len(parts1) != 2: err("unexpected ansible output1")
-#     parts2 = parts1[1].split(":")
-#     if len(parts2) != 2: err("unexpected ansible output2")
-#     parts3 = parts2[1].split('"')
-#     if len(parts3) != 3: err("unexpected ansible output3")
-#     return parts3[1]
-# def get_master_ip():
-#     res = subprocess.check_output([ansible_cmd,
-#                                    "-i", "openstack_inventory.py",
-#                                    "--extra-vars", repr(make_extra_vars()),
-#                                    "-m", "debug", "-a", "var=hostvars[inventory_hostname].ansible_ssh_host",
-#                                    args.cluster_name + "-master"])
-#     return parse_host_ip(res)
-
-
 def parse_host_ip(resp):
     """parse ansible debug output with var=hostvars[inventory_hostname].ansible_ssh_host and return host"""
     parts1 = resp.split("=>")
@@ -485,66 +464,6 @@ def ssh_output(host, cmd):
             cmd,
         ]
     )
-
-
-def ssh_first_slave(master_ip, cmd):
-    # can't do `head -n1 /opt/spark/conf/slaves` since it's not deployed yet
-    return ssh_output(
-        master_ip,
-        "ssh %s-slave-1 '%s'" % (args.cluster_name, cmd.replace("'", "'\\''")),
-    )
-
-
-# FIXME: copied from https://github.com/amplab/spark-ec2/blob/branch-1.5/deploy_templates.py
-def get_worker_mem_mb(master_ip):
-    if args.spark_worker_mem_mb is not None:
-        return args.spark_worker_mem_mb
-    mem_command = "cat /proc/meminfo | grep MemTotal | awk '{print $2}'"
-
-    ssh_first_slave_ = ssh_first_slave(master_ip, mem_command)
-    if type(ssh_first_slave_) != "int":
-        print(ssh_first_slave_)
-
-    slave_ram_kb = int(ssh_first_slave_)
-    slave_ram_mb = slave_ram_kb // 1024
-    # Leave some RAM for the OS, Hadoop daemons, and system caches
-    if slave_ram_mb > 100 * 1024:
-        slave_ram_mb = slave_ram_mb - 15 * 1024  # Leave 15 GB RAM
-    elif slave_ram_mb > 60 * 1024:
-        slave_ram_mb = slave_ram_mb - 10 * 1024  # Leave 10 GB RAM
-    elif slave_ram_mb > 40 * 1024:
-        slave_ram_mb = slave_ram_mb - 6 * 1024  # Leave 6 GB RAM
-    elif slave_ram_mb > 20 * 1024:
-        slave_ram_mb = slave_ram_mb - 3 * 1024  # Leave 3 GB RAM
-    elif slave_ram_mb > 10 * 1024:
-        slave_ram_mb = slave_ram_mb - 2 * 1024  # Leave 2 GB RAM
-    else:
-        slave_ram_mb = max(512, slave_ram_mb - 1300)  # Leave 1.3 GB RAM
-    return slave_ram_mb
-
-
-def get_master_mem(master_ip):
-    mem_command = "cat /proc/meminfo | grep MemTotal | awk '{print $2}'"
-    master_ram_kb = int(ssh_output(master_ip, mem_command))
-    master_ram_mb = master_ram_kb // 1024
-    # Leave some RAM for the OS, Hadoop daemons, and system caches
-    if master_ram_mb > 100 * 1024:
-        master_ram_mb = master_ram_mb - 15 * 1024  # Leave 15 GB RAM
-    elif master_ram_mb > 60 * 1024:
-        master_ram_mb = master_ram_mb - 10 * 1024  # Leave 10 GB RAM
-    elif master_ram_mb > 40 * 1024:
-        master_ram_mb = master_ram_mb - 6 * 1024  # Leave 6 GB RAM
-    elif master_ram_mb > 20 * 1024:
-        master_ram_mb = master_ram_mb - 3 * 1024  # Leave 3 GB RAM
-    elif master_ram_mb > 10 * 1024:
-        master_ram_mb = master_ram_mb - 2 * 1024  # Leave 2 GB RAM
-    else:
-        master_ram_mb = max(512, master_ram_mb - 1300)  # Leave 1.3 GB RAM
-    return "%s" % master_ram_mb
-
-
-def get_slave_cpus(master_ip):
-    return int(ssh_first_slave(master_ip, "nproc"))
 
 
 cmdline = [ansible_playbook_cmd]
