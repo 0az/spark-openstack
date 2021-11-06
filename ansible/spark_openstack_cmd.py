@@ -97,12 +97,9 @@ parser.add_argument(
     help="Request Spark deployment (using Hadoop)",
 )
 parser.add_argument(
-    "--mountnfs", action="store_true", help="Should we run mountnfs"
-)
-parser.add_argument(
-    "--use-oracle-java",
+    "--mountnfs",
     action="store_true",
-    help="Use Oracle Java. If not set, OpenJDK is used",
+    help="Request mountnfs",
 )
 parser.add_argument(
     "--spark-worker-mem-mb",
@@ -167,30 +164,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--deploy-ignite",
-    action='store_true',
-    help="Should we deploy Apache Ignite.",
-)
-parser.add_argument(
-    "--ignite-memory",
-    default=50,
-    type=float,
-    help="Percentage of Spark worker memory to be given to Apache Ignite.",
-)
-parser.add_argument(
-    "--ignite-version", default="2.7.5", help="Apache Ignite version to use."
-)
-
-parser.add_argument(
     "--yarn", action='store_true', help="Should we deploy using Apache YARN."
-)
-parser.add_argument(
-    "--deploy-elastic",
-    action='store_true',
-    help="Should we deploy ElasticSearch",
-)
-parser.add_argument(
-    "--es-heap-size", default='1g', help="ElasticSearch heap size"
 )
 
 parser.add_argument(
@@ -279,7 +253,10 @@ def get_elastic_jar():
     elastic_path = os.path.join(elastic_dir, archive_path)
     if not os.path.exists(elastic_path):
         print("Downloading ElasticSearch Hadoop integration")
-        urllib.urlretrieve(elastic_hadoop_url, filename=elastic_hadoop_filename)
+        urllib.urlretrieve(
+            elastic_hadoop_url,
+            filename=elastic_hadoop_filename,
+        )
 
         with ZipFile(elastic_hadoop_filename) as archive:
             archive.extract(archive_path, path=elastic_dir)
@@ -288,19 +265,22 @@ def get_elastic_jar():
         return elastic_path
 
 
-def make_extra_vars():
-    extra_vars = dict()
-    extra_vars["act"] = args.act
-    extra_vars["n_slaves"] = args.slaves
-    extra_vars["cluster_name"] = args.cluster_name
-    extra_vars["os_image"] = args.image_id
-    extra_vars["os_key_name"] = args.key_pair
-    extra_vars["flavor"] = args.instance_type
-    extra_vars["master_flavor"] = args.master_instance_type
-    extra_vars["floating_ip_pool"] = args.floating_ip_pool
-    extra_vars["virtual_network"] = args.virtual_network
-    extra_vars["ansible_user"] = args.hadoop_user
-    extra_vars["ansible_ssh_private_key_file"] = args.identity_file
+def make_extra_vars(action: str = args.act):
+    extra_vars = {}
+    extra_vars.update(
+        act='act',
+        n_slaves='slaves',
+        cluster_name='cluster_name',
+        os_image='image_id',
+        os_key_name='key_pair',
+        flavor='instance_type',
+        master_flavor='master_instance_type',
+        floating_ip_pool='floating_ip_pool',
+        virtual_network='virtual_network',
+        ansible_user='hadoop_user',
+        ansible_ssh_private_key_file='identity_file',
+        hadoop_user='hadoop_user',
+    )
 
     extra_vars["os_project_name"] = os.getenv('OS_PROJECT_NAME') or os.getenv(
         'OS_TENANT_NAME'
@@ -309,8 +289,7 @@ def make_extra_vars():
     if not extra_vars["os_project_name"] or not extra_vars["os_auth_url"]:
         abort("Please source your OpenStack openrc file", -1)
 
-    extra_vars["hadoop_user"] = args.hadoop_user
-    if args.act == 'launch':
+    if action == 'launch':
         extra_vars["create_cluster"] = args.create
         extra_vars["deploy_spark"] = args.deploy_spark
         extra_vars["mountnfs"] = args.mountnfs
@@ -333,6 +312,7 @@ def make_extra_vars():
             "Deploying Apache Spark %s with Apache Hadoop %s"
             % (extra_vars["spark_version"], extra_vars["hadoop_version"])
         )
+
     extra_vars["boot_from_volume"] = args.boot_from_volume
 
     extra_vars["os_swift_username"] = (
@@ -346,8 +326,6 @@ def make_extra_vars():
     if not extra_vars["os_swift_password"]:
         del extra_vars["os_swift_password"]
 
-    extra_vars["use_oracle_java"] = args.use_oracle_java
-
     extra_vars["deploy_jupyter"] = args.deploy_jupyter
     if args.deploy_jupyter:
         extra_vars["toree_version"] = toree_versions[
@@ -356,14 +334,10 @@ def make_extra_vars():
 
     extra_vars["deploy_jupyterhub"] = args.deploy_jupyterhub
     extra_vars["nfs_shares"] = [
-        {"nfs_path": l[0], "mount_path": l[1]} for l in args.nfs_share
+        {"nfs_path": nfs, "mount_path": mount} for nfs, mount in args.nfs_share
     ]
 
     extra_vars["use_yarn"] = args.yarn
-
-    # ElasticSearch deployment => --extra-args
-    extra_vars["deploy_elastic"] = args.deploy_elastic
-    extra_vars["es_heap_size"] = args.es_heap_size
 
     # Cassandra deployment => --extra-args
     extra_vars["deploy_cassandra"] = args.deploy_cassandra
@@ -400,9 +374,6 @@ def make_extra_vars():
         add_jar(elastic_jar)
 
     extra_vars["extra_jars"] = extra_jars
-
-    extra_vars["deploy_ignite"] = args.deploy_ignite
-    extra_vars["ignite_version"] = args.ignite_version
 
     return extra_vars
 
