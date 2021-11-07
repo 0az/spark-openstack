@@ -227,32 +227,6 @@ def get_cassandra_connector_jar(spark_version):
     return spark_cassandra_connector_filename
 
 
-def get_elastic_jar():
-    elastic_hadoop_url = (
-        "http://download.elastic.co/hadoop/elasticsearch-hadoop-5.5.0.zip"
-    )
-    elastic_hadoop_filename = "/tmp/" + os.path.basename(
-        urlparse.urlsplit(elastic_hadoop_url).path
-    )
-    elastic_dir = "/tmp/elasticsearch-hadoop/"
-    archive_path = (
-        "elasticsearch-hadoop-5.5.0/dist/elasticsearch-hadoop-5.5.0.jar"
-    )
-    elastic_path = os.path.join(elastic_dir, archive_path)
-    if not os.path.exists(elastic_path):
-        print("Downloading ElasticSearch Hadoop integration")
-        urllib.urlretrieve(
-            elastic_hadoop_url,
-            filename=elastic_hadoop_filename,
-        )
-
-        with ZipFile(elastic_hadoop_filename) as archive:
-            archive.extract(archive_path, path=elastic_dir)
-        return elastic_path
-    else:
-        return elastic_path
-
-
 def make_extra_vars(action: str = args.act):
     extra_vars = {}
     extra_vars.update(
@@ -349,10 +323,6 @@ def make_extra_vars(action: str = args.act):
     if args.deploy_cassandra:
         cassandra_jar = get_cassandra_connector_jar(args.spark_version)
         add_jar(cassandra_jar)
-
-    if args.deploy_elastic:
-        elastic_jar = get_elastic_jar()
-        add_jar(elastic_jar)
 
     extra_vars["extra_jars"] = extra_jars
 
