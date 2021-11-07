@@ -107,18 +107,6 @@ parser.add_argument(
     help="Force worker memory value in megabytes (e.g. 14001)",
 )
 parser.add_argument(
-    "-j",
-    "--deploy-jupyter",
-    action='store_true',
-    help="Request Jupyter deployment on master node.",
-)
-parser.add_argument(
-    "-jh",
-    "--deploy-jupyterhub",
-    action='store_true',
-    help="Request JupyterHub deployment on master node",
-)
-parser.add_argument(
     "--spark-version", default="2.4.4", help="Spark version to use"
 )
 parser.add_argument("--hadoop-version", help="Hadoop version to use")
@@ -326,13 +314,6 @@ def make_extra_vars(action: str = args.act):
     if not extra_vars["os_swift_password"]:
         del extra_vars["os_swift_password"]
 
-    extra_vars["deploy_jupyter"] = args.deploy_jupyter
-    if args.deploy_jupyter:
-        extra_vars["toree_version"] = toree_versions[
-            extra_vars["spark_version"][0]
-        ]
-
-    extra_vars["deploy_jupyterhub"] = args.deploy_jupyterhub
     extra_vars["nfs_shares"] = [
         {"nfs_path": nfs, "mount_path": mount} for nfs, mount in args.nfs_share
     ]
