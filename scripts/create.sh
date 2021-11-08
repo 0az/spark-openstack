@@ -25,6 +25,6 @@ test \
 	-t m1.xlarge \
 	-m m1.xlarge \
 	-a focal-server-cloudimg-amd64  \
-	--spark-version 2.4.4 \
+	--spark-version 2.4.8 \
 	launch test-project
 EOF
