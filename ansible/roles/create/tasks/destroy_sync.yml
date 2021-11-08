@@ -1,7 +1,7 @@
 ---
 
 - name: acknowledge existing servers
-  os_server_facts:
+  os_server_info:
 
 - name: debug
   set_fact: alive_servers="{{ alive_servers | default([]) | union([item.name]) }}"

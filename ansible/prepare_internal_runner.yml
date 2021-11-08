@@ -45,7 +45,7 @@
         seconds: 10
 
     - name: Register runner facts
-      os_server_facts:
+      os_server_info:
         filters:
           metadata:
             hostname: "{{ cluster_name }}-runner"
