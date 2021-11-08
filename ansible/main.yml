@@ -9,8 +9,6 @@
         name: os_facts
       when: act != "destroy"
 
-    - debug: var=create_cluster
-
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
   tasks:
     - include_role:

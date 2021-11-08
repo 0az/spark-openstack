@@ -13,7 +13,6 @@
 - name: The following instances will be destroyed now
   debug: var=alive_servers
 
-
 - name: destroy cluster instances
   os_server:
     state: absent
