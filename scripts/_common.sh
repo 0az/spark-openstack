@@ -3,7 +3,7 @@
 usage() {
 	echo 'USAGE'
 	printf '\t%s <ssh-args ...>\n\n' "$0"
-	declare -F extra_usage >/dev/null && extra_usage
+	declare -F extra_usage >/dev/null && extra_usage && echo
 	echo 'All arguments are passed through to ssh(1).'
 }
 
@@ -28,3 +28,5 @@ _check_help() {
 		esac
 	done
 }
+
+_check_help "$@"
