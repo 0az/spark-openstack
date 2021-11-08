@@ -5,8 +5,13 @@ scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$scripts/_common.sh"
 
 exec ssh "$@" /bin/bash <<EOF
-test -a ~/spark-openstack/spark-openstack \
-&& ~/spark-openstack/spark-openstack \
+cd ~/spark-openstack || exit 1
+
+test \
+	-a ./spark-openstack \
+	-a -a .venv/bin/activate \
+&& source .venv/bin/activate \
+&& ./spark-openstack \
 	--create \
 	--deploy-spark \
 	-k admin \
