@@ -305,7 +305,7 @@ def make_extra_vars(action: str = args.act):
     if args.extra_jars is None:
         args.extra_jars = []
 
-    extra_jars = list()
+    extra_jars = []
 
     def add_jar(path):
         extra_jars.append(
@@ -344,19 +344,19 @@ def parse_host_ip(resp):
 
 
 def get_master_ip():
-    vars = make_extra_vars()
-    vars['extended_role'] = 'master'
+    extra_vars = make_extra_vars()
+    extra_vars['extended_role'] = 'master'
     res = subprocess.check_output(
-        [ansible_playbook_cmd, "--extra-vars", repr(vars), "get_ip.yml"]
+        [ansible_playbook_cmd, "--extra-vars", repr(extra_vars), "get_ip.yml"]
     )
     return parse_host_ip(res)
 
 
 def get_ip(role):
-    vars = make_extra_vars()
-    vars['extended_role'] = role
+    extra_vars = make_extra_vars()
+    extra_vars['extended_role'] = role
     res = subprocess.check_output(
-        [ansible_playbook_cmd, "--extra-vars", repr(vars), "get_ip.yml"]
+        [ansible_playbook_cmd, "--extra-vars", repr(extra_vars), "get_ip.yml"]
     )
     return parse_host_ip(res)
 
