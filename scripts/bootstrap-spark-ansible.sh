@@ -4,11 +4,7 @@ set -euo pipefail
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-usage() {
-	echo 'USAGE'
-	printf '\t%s <ssh-args ...>\n\n' "$0"
-	echo 'All arguments are passed through to ssh(1).'
-}
+source "$scripts/_common.sh"
 
 git_root="$(git rev-parse --show-toplevel 2>/dev/null || echo)"
 git_remote='https://github.com/liside/spark-openstack.git'
@@ -32,8 +28,22 @@ clone_cmd+=("${git_remote_url/git@github.com:/https://github.com/}")
 # shellcheck disable=SC2087
 ssh "$@" -- /bin/bash <<-EOF
 set -euo pipefail
-if test -d ~/spark-openstack -a -z "${RECREATE_VENV:-}"; then 
-	exit 1
+if test -d ~/spark-openstack; then 
+	if test -n "${NO_RECLONE_REPO:-}"; then
+		exit 0
+	fi
+	if test -z "${RECLONE_REPO:-}"; then
+		echo 'error: Repository already exists!' >&2
+		exit 1
+	fi
+	if
+		test -z "${FORCE_RECLONE_REPO:-}" \
+		&& git --git-dir=~/spark-openstack/.git diff --quiet \
+	; then
+		echo 'error: Dirty repository working tree!' >&2
+		exit 1
+	fi
+	rm -rf ~/spark-openstack
 fi
 ${clone_cmd[@]}
 EOF
