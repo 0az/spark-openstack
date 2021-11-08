@@ -32,8 +32,8 @@ clone_cmd+=("${git_remote_url/git@github.com:/https://github.com/}")
 # shellcheck disable=SC2087
 ssh "$@" -- /bin/bash <<-EOF
 set -euo pipefail
-if test -d ~/spark-openstack; then
-	rm -rf spark-openstack
+if test -d ~/spark-openstack -a -z "${RECREATE_VENV:-}"; then 
+	exit 1
 fi
 ${clone_cmd[@]}
 EOF

@@ -20,14 +20,10 @@ pip_packages=(
 
 tmpdir="$(mktemp -d)"
 
-if test -d ~/spark-openstack -a -z "$RECREATE_VENV"; then 
-	exit 1
-fi
-
 sudo apt-get update
 sudo apt-get install "${apt_packages[@]}"
 
-if test -d ~/spark-openstack/.venv -a -n "$RECREATE_VENV"; then
+if test -d ~/spark-openstack/.venv -a -n "${RECREATE_VENV:-}"; then
 	rm -rf ~/spark-openstack/.venv
 fi
 
