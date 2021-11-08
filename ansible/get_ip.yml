@@ -10,7 +10,7 @@
             group: "{{ cluster_name }}_{{ extended_role }}"
       register: manager_info
       no_log: True
-    - debug: <-
+    - debug: >-
         msg="{{
           manger_info.openstack_servers[0].interface_ip
           if manger_info.openstack_servers[0].interface_ip != ''
