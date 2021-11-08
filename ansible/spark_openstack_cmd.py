@@ -361,24 +361,6 @@ def get_ip(role):
     return parse_host_ip(res)
 
 
-def ssh_output(host, cmd):
-    return subprocess.check_output(
-        [
-            "ssh",
-            "-q",
-            "-t",
-            "-o",
-            "StrictHostKeyChecking=no",
-            "-o",
-            "UserKnownHostsFile=/dev/null",
-            "-i",
-            args.identity_file,
-            "ubuntu@" + host,
-            cmd,
-        ]
-    )
-
-
 cmdline = [ansible_playbook_cmd]
 cmdline.extend(unknown)
 
