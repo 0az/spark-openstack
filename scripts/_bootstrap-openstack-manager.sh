@@ -34,7 +34,8 @@ fi
 # shellcheck disable=SC1090
 source ~/spark-openstack/.venv/bin/activate
 
-pip install "${pip_packages[@]}"
+pip install -U pip wheel
+pip install -U "${pip_packages[@]}"
 
 # Create a more-or-less identical copy, permissions/owner-wise
 # This lets us truncate and write to this file before an atomic move+replace
@@ -47,7 +48,7 @@ if ! grep -Ev 'ctl[.-]' /etc/hosts | grep -q ctl; then
 	echo "$ip ctl" >> "$tmpdir/hosts.txt"
 fi
 
-python3 - "$tmpdir/hosts.txt" <<EOF
+cat > "$tmpdir/coalesce_hosts.py" <<EOF
 import sys
 if len(sys.argv) != 2:
     sys.exit(1)
@@ -65,5 +66,7 @@ lines = sorted(d.items(), key=lambda t: tuple(map(int, t[0].split('.'))))
 for addr, names in lines:
     print(f'{addr}\t{" ".join(names)}')
 EOF
+
+python3 "$tmpdir/coalesce_hosts.py" "$tmpdir/hosts.txt" | sudo tee "$tmpdir/hosts"
 
 sudo mv "$tmpdir/hosts" /etc/hosts
