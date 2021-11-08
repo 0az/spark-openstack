@@ -8,7 +8,7 @@
         filters:
           metadata:
             group: "{{ cluster_name }}_{{ extended_role }}"
-        register: manager_info
+      register: manager_info
       no_log: True
     - debug: <-
         msg="{{

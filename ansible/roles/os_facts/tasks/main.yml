@@ -5,7 +5,7 @@
     filters:
       metadata:
         group: "{{ item }}"
-    register: manager_info
+  register: manager_info
   with_items:
     - "{{ cluster_name }}_master"
 
@@ -28,7 +28,7 @@
     filters:
       metadata:
         group: "{{ item }}"
-    register: worker_info
+  register: worker_info
   with_items:
     - "{{ cluster_name }}_slaves"
 

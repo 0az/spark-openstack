@@ -2,7 +2,7 @@
 
 - name: acknowledge existing servers
   os_server_info:
-    register: existing_info
+  register: existing_info
 
 - name: debug
   set_fact: 'alive_servers="{{ alive_servers | default([]) | union([item.name]) }}"'

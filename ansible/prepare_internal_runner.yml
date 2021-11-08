@@ -49,7 +49,7 @@
         filters:
           metadata:
             hostname: "{{ cluster_name }}-runner"
-        register: runner_info
+      register: runner_info
 
     - name: Make up inventory
       add_host:
