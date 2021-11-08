@@ -12,7 +12,7 @@
 
 - name: Wait for ssh-server to start
   local_action:
-    module: wait_for
+    wait_for:
       host: "{{ hostvars[inventory_hostname].openstack.public_v4 }}"
       port: 22
       search_regex: OpenSSH
