@@ -1,6 +1,7 @@
 #! /bin/bash
 
-# This file is read by bootstrap-spark-ansible.sh.
+# This file is read by bootstrap-spark-ansible.sh
+# and executed on the remote OpenStack manager node.
 
 set -euo pipefail
 
@@ -18,37 +19,38 @@ pip_packages=(
 	shade
 )
 
-tmpdir="$(mktemp -d)"
+repo=~/spark-openstack
+tmp="$(mktemp -d)"
 
 sudo apt-get update
 sudo apt-get install "${apt_packages[@]}"
 
-if test -d ~/spark-openstack/.venv -a -n "${RECREATE_VENV:-}"; then
-	rm -rf ~/spark-openstack/.venv
+if test -d "$repo/.venv" -a -n "${RECREATE_VENV:-}"; then
+	rm -rf "$repo/.venv"
 fi
 
-if ! test -d ~/spark-openstack/.venv; then
-	python3 -m venv ~/spark-openstack/.venv
+if ! test -d "$repo/.venv"; then
+	python3 -m venv "$repo/.venv"
 fi
 
-# shellcheck disable=SC1090
-source ~/spark-openstack/.venv/bin/activate
+# shellcheck disable=SC1091
+source "$repo/.venv/bin/activate"
 
 pip install -U pip wheel
 pip install -U "${pip_packages[@]}"
 
 # Create a more-or-less identical copy, permissions/owner-wise
 # This lets us truncate and write to this file before an atomic move+replace
-sudo cp -a /etc/hosts "$tmpdir/hosts"
+sudo cp -a /etc/hosts "$tmp/hosts"
 # Create a writable copy as a buffer
-cp "$tmpdir/hosts" "$tmpdir/hosts.txt"
-echo '127.0.0.1 mgt-node' >> "$tmpdir/hosts.txt"
+cp "$tmp/hosts" "$tmp/hosts.txt"
+echo '127.0.0.1 mgt-node' >> "$tmp/hosts.txt"
 if ! grep -Ev 'ctl[.-]' /etc/hosts | grep -q ctl; then
 	ip="$(getent ahosts "$(hostname)")"
-	echo "$ip ctl" >> "$tmpdir/hosts.txt"
+	echo "$ip ctl" >> "$tmp/hosts.txt"
 fi
 
-cat > "$tmpdir/coalesce_hosts.py" <<EOF
+cat > "$tmp/coalesce_hosts.py" <<EOF
 import sys
 if len(sys.argv) != 2:
     sys.exit(1)
@@ -67,6 +69,14 @@ for addr, names in lines:
     print(f'{addr}\t{" ".join(names)}')
 EOF
 
-python3 "$tmpdir/coalesce_hosts.py" "$tmpdir/hosts.txt" | sudo tee "$tmpdir/hosts"
+python3 "$tmp/coalesce_hosts.py" "$tmp/hosts.txt" | sudo tee "$tmp/hosts"
 
-sudo mv "$tmpdir/hosts" /etc/hosts
+sudo mv "$tmp/hosts" /etc/hosts
+
+# shellcheck disable=SC2024
+
+(
+	umask 077
+	sudo cat /root/setup/admin-openrc.sh > "$tmp/admin-openrc.sh"
+	mv "$tmp/admin-openrc.sh" "$repo"
+)
