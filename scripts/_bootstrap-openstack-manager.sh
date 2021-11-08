@@ -47,7 +47,7 @@ if ! grep -Ev 'ctl[.-]' /etc/hosts | grep -q ctl; then
 	echo "$ip ctl" >> "$tmpdir/hosts.txt"
 fi
 
-python3 - <<EOF
+python3 - "$tmpdir/hosts.txt" <<EOF
 import sys
 if len(sys.argv) != 2:
     sys.exit(1)
