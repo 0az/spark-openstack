@@ -369,7 +369,7 @@ extra_vars = make_extra_vars()
 
 if args.act == "launch":
     cmdline_create = cmdline[:]
-    cmdline_create.extend(["-v", "main.yml", "--extra-vars", repr(extra_vars)])
+    cmdline_create.extend(["main.yml", "--extra-vars", repr(extra_vars)])
     subprocess.call(cmdline_create)
     master_ip = get_master_ip()
     print("Cluster launched successfully; Master IP is %s" % (master_ip))
