@@ -18,7 +18,7 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ manager_info['results']['openstack_servers'] }}"
+    - "{{ manager_info['results'][0]['openstack_servers'] }}"
 
 - name: Register slaves facts
   os_server_info:
@@ -38,4 +38,4 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ worker_info['results']['openstack_servers'] }}"
+    - "{{ worker_info['results'][0]['openstack_servers'] }}"

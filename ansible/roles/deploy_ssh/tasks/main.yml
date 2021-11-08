@@ -4,7 +4,6 @@
   local_action: file path="files/keys" state=directory
   tags: prepare
 
-
 - name: Check if instances really got floating IPs
   local_action: fail msg="One of the instances didn't get floating IP address"
   when: hostvars[inventory_hostname].openstack.public_v4 == '' and floating_ip_pool != 'None'
@@ -23,8 +22,8 @@
   tags: prepare
   when: floating_ip_pool != 'None'
 
-- name: install Python 2 if missing
-  raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+- name: install Python 3 if missing
+  raw: test -e /usr/bin/python3 || {sudo apt -y update && sudo apt install -y python3-minimal}
   delay: 10
   tags: prepare
 
