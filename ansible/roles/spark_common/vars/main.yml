@@ -37,6 +37,13 @@ hadoop_vars:
     suffix: "hadoop2.7"
     swift_lib_url: False
     swift_lib_name: False
+  "3.1":
+    url: "http://archive.apache.org/dist/hadoop/common/hadoop-3.1.4/hadoop-3.1.4.tar.gz"
+    archived_name: "hadoop-3.1.4.tar.gz"
+    folder_name: "hadoop-3.1.4"
+    suffix: "hadoop3.1"
+    swift_lib_url: False
+    swift_lib_name: False
   "cdh4":
     url: "https://archive.cloudera.com/cdh4/cdh/4/hadoop-2.0.0-cdh4.7.1.tar.gz"
     archived_name: "hadoop-2.0.0-cdh4.7.1.tar.gz"
