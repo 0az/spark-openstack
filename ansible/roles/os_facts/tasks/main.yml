@@ -18,10 +18,9 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ manager_info.openstack_servers }}"
+    - "{{ manager_info['openstack_servers'] }}"
 
-- debug: var=openstack
-
+- debug: var=manager_info
 
 - name: Register slaves facts
   os_server_info:
@@ -41,4 +40,4 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ worker_info.openstack_servers }}"
+    - "{{ worker_info['openstack_servers'] }}"

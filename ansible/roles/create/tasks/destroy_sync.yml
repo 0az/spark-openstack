@@ -7,7 +7,7 @@
 - name: debug
   set_fact: 'alive_servers="{{ alive_servers | default([]) | union([item.name]) }}"'
   when: item['metadata']['group'] is defined and (cluster_name + '_master' == item['metadata']['group'] or cluster_name + '_slaves' == item['metadata']['group'] or cluster_name + '_runner' == item['metadata']['group'])
-  with_items: "{{ existing_info.openstack_servers }}"
+  with_items: "{{ existing_info['openstack_servers'] }}"
   no_log: True
 
 - name: The following instances will be destroyed now
