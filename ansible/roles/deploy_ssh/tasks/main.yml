@@ -13,11 +13,11 @@
 - name: Wait for ssh-server to start
   local_action:
     module: wait_for
-      host="{{ hostvars[inventory_hostname].openstack.public_v4 }}"
-      port=22
-      search_regex=OpenSSH
-      delay=3
-      timeout=300
+      host: "{{ hostvars[inventory_hostname].openstack.public_v4 }}"
+      port: 22
+      search_regex: OpenSSH
+      delay: 3
+      timeout: 300
   #    - debug: msg="Checking ssh for {{ hostvars[inventory_hostname].openstack.public_v4 }}"
   tags: prepare
   when: floating_ip_pool != 'None'
