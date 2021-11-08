@@ -10,17 +10,16 @@
 #  fail: msg="One of the instances didn't get floating IP address"
   tags: prepare
 
-- name: Wait for ssh-server to start
-  local_action:
-    wait_for:
-      host: "{{ hostvars[inventory_hostname].openstack.public_v4 }}"
-      port: 22
-      search_regex: OpenSSH
-      delay: 3
-      timeout: 300
-  #    - debug: msg="Checking ssh for {{ hostvars[inventory_hostname].openstack.public_v4 }}"
-  tags: prepare
-  when: floating_ip_pool != 'None'
+# - name: Wait for ssh-server to start
+#   local_action:
+#     wait_for:
+#       host: "{{ hostvars[inventory_hostname].openstack.public_v4 }}"
+#       port: 22
+#       search_regex: OpenSSH
+#       delay: 3
+#       timeout: 300
+#   tags: prepare
+#   when: floating_ip_pool != 'None'
 
 - name: install Python 3 if missing
   raw: test -e /usr/bin/python3 || {sudo apt -y update && sudo apt install -y python3-minimal}
