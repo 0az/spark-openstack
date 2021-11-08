@@ -8,5 +8,11 @@
         filters:
           metadata:
             group: "{{ cluster_name }}_{{ extended_role }}"
+        register: manager_info
       no_log: True
-    - debug: msg="{{ openstack_servers[0].interface_ip if openstack_servers[0].interface_ip != '' else openstack_servers[0].private_v4 }}"
+    - debug: <-
+        msg="{{
+          manger_info.openstack_servers[0].interface_ip
+          if manger_info.openstack_servers[0].interface_ip != ''
+          else manger_info.openstack_servers[0].private_v4
+        }}"

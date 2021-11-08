@@ -49,6 +49,7 @@
         filters:
           metadata:
             hostname: "{{ cluster_name }}-runner"
+        register: runner_info
 
     - name: Make up inventory
       add_host:
@@ -59,7 +60,7 @@
         ansible_user: "ubuntu"
         openstack: "{{ item }}"
       with_items:
-        - "{{ openstack_servers }}"
+        - "{{ runner_info.openstack_servers }}"
 
 - hosts: "{{ cluster_name }}_runner"
   become: yes

@@ -5,6 +5,7 @@
     filters:
       metadata:
         group: "{{ item }}"
+    register: manager_info
   with_items:
     - "{{ cluster_name }}_master"
 
@@ -17,7 +18,7 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ openstack_servers }}"
+    - "{{ manager_info.openstack_servers }}"
 
 - debug: var=openstack
 
@@ -27,6 +28,7 @@
     filters:
       metadata:
         group: "{{ item }}"
+    register: worker_info
   with_items:
     - "{{ cluster_name }}_slaves"
 
@@ -39,4 +41,4 @@
     ansible_user: "ubuntu"
     openstack: "{{ item }}"
   with_items:
-    - "{{ openstack_servers }}"
+    - "{{ worker_info.openstack_servers }}"
