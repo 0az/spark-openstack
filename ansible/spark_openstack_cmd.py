@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 spark_versions = {
     # 2.4.4 supports 3.1 as well, but handling SHA hashes in Ansible is hard
-    "2.4.4": {"hadoop_versions": ["2.7", "3.0"]},
+    "2.4.4": {"hadoop_versions": ["2.7", "3.0", "3.1"]},
     "2.3.0": {"hadoop_versions": ["2.6", "2.7"]},
     "2.2.1": {"hadoop_versions": ["2.6", "2.7"]},
     "2.2.0": {"hadoop_versions": ["2.6", "2.7"]},
