@@ -32,7 +32,7 @@ if test -d ~/spark-openstack; then
 	if test -n "${NO_RECLONE_REPO:-}"; then
 		exit 0
 	fi
-	if test -z "${RECLONE_REPO:-}"; then
+	if test -z "${RECLONE_REPO:-}" -a -z "${FORCE_RECLONE_REPO:-}"; then
 		echo 'error: Repository already exists!' >&2
 		exit 1
 	fi

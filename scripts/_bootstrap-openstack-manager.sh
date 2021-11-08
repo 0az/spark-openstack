@@ -14,7 +14,7 @@ apt_packages=(
 	python3-wheel
 )
 pip_packages=(
-	ansible
+	'ansible ~=2.9.0, <3.0'
 	openstacksdk
 	shade
 )
