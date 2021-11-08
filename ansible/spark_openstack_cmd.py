@@ -67,7 +67,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     'act',
     type=str,
-    choices=["launch", "destroy", "get-master", "config", "runner"],
+    choices=["launch", "destroy", "get-master", "config", "runner", "debug"],
 )
 parser.add_argument('cluster_name', help="Name for your cluster")
 parser.add_argument('option', nargs='?')
@@ -418,5 +418,5 @@ elif args.act == "runner":
     subprocess.call(cmdline_create)
     runner_ip = get_ip('runner')
     print("Runner ready; IP is %s" % (runner_ip))
-else:
-    abort("unknown action: " + args.act)
+elif args.act == 'debug':
+    print(extra_vars)
