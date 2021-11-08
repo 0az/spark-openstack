@@ -243,7 +243,7 @@ def make_extra_vars(action: str = args.act):
         ansible_ssh_private_key_file='identity_file',
         hadoop_user='hadoop_user',
     )
-    extra_vars.update((target, getattr(args, key)) for key, target in mapping.items())
+    extra_vars.update((target, getattr(args, key)) for target, key in mapping.items())
 
     extra_vars["os_project_name"] = os.getenv('OS_PROJECT_NAME') or os.getenv(
         'OS_TENANT_NAME'
