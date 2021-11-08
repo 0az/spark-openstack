@@ -16,12 +16,12 @@
 #   - install
 #   - spark_install
 
-- name: get Spark distro checksum
-  local_action: get_url url={{ spark_checksum_url }} dest=files/
-  become: false
-  tags:
-  - install
-  - spark_install
+# - name: get Spark distro checksum
+#   local_action: get_url url={{ spark_checksum_url }} dest=files/
+#   become: false
+#   tags:
+#   - install
+#   - spark_install
 
 # it would be reasonable to use sha1 for crossplatform, but Spark doesn't provide sha1 checksum.
 #- name: extract Spark distro checksum from file
