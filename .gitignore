@@ -1,6 +1,9 @@
 ansible/files/keys/
 packages.txt
+
+admin-openrc.sh
 sandbox-openrc.sh
+clouds.yaml
 
 *.deb
 *.md*
