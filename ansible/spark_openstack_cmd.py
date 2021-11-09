@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# FIXME: Serialize extra vars to json file, and invoke using --extra-vars=@file
+# FIXME: Use named pipes or tmpdirs (path passed via vars) to extract IPs
+
 
 import argparse
 import os
