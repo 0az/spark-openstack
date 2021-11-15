@@ -78,11 +78,14 @@ with open(sys.argv[1]) as f:
                 l.append(v)
 
 for text in lines:
-    if text in d:
+    if not text:
+        print()
+    elif text[0] == '#':
+        print(text)
+    elif text in d:
         names = d[text]
         print(f'{text}\t{" ".join(names)}')
-    else:
-        print(text)
+        del d[text]
 EOF
 
 python3 "$tmp/coalesce_hosts.py" "$tmp/hosts.txt" | sudo tee "$tmp/hosts"
