@@ -10,6 +10,7 @@ import os
 import subprocess
 import sys
 import urllib
+import shlex
 from zipfile import ZipFile
 
 from urllib.parse import urlparse
@@ -74,6 +75,7 @@ parser.add_argument(
 )
 parser.add_argument('cluster_name', help="Name for your cluster")
 parser.add_argument('option', nargs='?')
+parser.add_argument('--print-command')
 parser.add_argument('-k', '--key-pair')
 parser.add_argument("-i", "--identity-file")
 parser.add_argument("-s", "--slaves", type=int)
@@ -374,6 +376,9 @@ extra_vars = make_extra_vars()
 if args.act == "launch":
     cmdline_create = cmdline[:]
     cmdline_create.extend(["main.yml", "--extra-vars", repr(extra_vars)])
+    if args.print_command:
+        print(shlex.join(cmdline_create))
+        sys.exit(0)
     subprocess.call(cmdline_create)
     # master_ip = get_master_ip()
     # print("Cluster launched successfully; Master IP is %s" % (master_ip))
