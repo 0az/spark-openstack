@@ -63,6 +63,7 @@
   become: yes
   become_user: root
   lineinfile: dest=/etc/hosts state=present line="{{ hostvars[item].openstack.private_v4 }} {{ hostvars[item].openstack.name }}"
-  with_items: "{{ play_hosts }}"
-    #  template: src=templates/hosts.j2 dest=/etc/hosts
+  debug: var=hostvars[item].openstack
+  with_items: "{{ ansible_play_batch }}"
+  # template: src=templates/hosts.j2 dest=/etc/hosts
   tags: prepare
