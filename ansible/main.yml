@@ -15,11 +15,12 @@
         name: deploy_ssh
       vars:
         hadoop_user: ubuntu
+      tags: deploy_ssh
       when: create_cluster is defined and create_cluster == true
     - include_role:
-            name: cpus
+        name: cpus
     - include_role:
-            name: mem_mb
+        name: mem_mb
 
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"

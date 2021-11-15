@@ -4,11 +4,11 @@
   local_action: file path="files/keys" state=directory
   tags: prepare
 
-- name: Check if instances really got floating IPs
-  local_action: fail msg="One of the instances didn't get floating IP address"
-  when: hostvars[inventory_hostname].openstack.public_v4 == '' and floating_ip_pool != 'None'
-#  fail: msg="One of the instances didn't get floating IP address"
-  tags: prepare
+# - name: Check if instances really got floating IPs
+#   local_action: fail msg="One of the instances didn't get floating IP address"
+#   when: hostvars[inventory_hostname].openstack.public_v4 == '' and floating_ip_pool != 'None'
+#   fail: msg="One of the instances didn't get floating IP address"
+#   tags: prepare
 
 # - name: Wait for ssh-server to start
 #   local_action:
@@ -62,8 +62,6 @@
 - name: modify /etc/hosts
   become: yes
   become_user: root
-  lineinfile: dest=/etc/hosts state=present line="{{ hostvars[item].openstack.private_v4 }} {{ hostvars[item].openstack.name }}"
-  debug: var=hostvars[item].openstack
+  lineinfile: dest=/etc/hosts state=present line="{{ hostvars[item].openstack.interface_ip }} {{ hostvars[item].openstack.name }}"
   with_items: "{{ ansible_play_batch }}"
-  # template: src=templates/hosts.j2 dest=/etc/hosts
   tags: prepare
