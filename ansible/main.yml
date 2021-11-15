@@ -12,12 +12,12 @@
       tags: always
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
+  tags: prepare
   tasks:
     - include_role:
         name: deploy_ssh
       vars:
         hadoop_user: ubuntu
-      tags: deploy_ssh
       when: create_cluster is defined and create_cluster == true
     - include_role:
         name: cpus
