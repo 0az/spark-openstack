@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # FIXME: Serialize extra vars to json file, and invoke using --extra-vars=@file
+# FIXME: Fix all of the ansible templates that use 'None' as a string instead of null
 # FIXME: Use named pipes or tmpdirs (path passed via vars) to extract IPs
 
 
@@ -10,7 +11,6 @@ import os
 import subprocess
 import sys
 import urllib
-import shlex
 from zipfile import ZipFile
 
 from urllib.parse import urlparse
@@ -377,7 +377,8 @@ if args.act == "launch":
     cmdline_create = cmdline[:]
     cmdline_create.extend(["main.yml", "--extra-vars", repr(extra_vars)])
     if args.print_command:
-        print(shlex.join(cmdline_create))
+        cmdline_create[-1] = '"%s"' % repr(extra_vars)
+        print(' '.join(cmdline_create))
         sys.exit(0)
     subprocess.call(cmdline_create)
     # master_ip = get_master_ip()
