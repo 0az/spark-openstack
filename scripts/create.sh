@@ -24,6 +24,20 @@ fi
 
 source .venv/bin/activate
 
+echo ./spark-openstack \
+	--create \
+	--deploy-spark \
+	-k "$KEY" \
+	-s 1 \
+	-n flat-lan-1-net \
+	-t m1.xlarge \
+	-m m1.xlarge \
+	-a focal-server-cloudimg-amd64  \
+	--spark-version 2.4.8 \
+	launch test-project
+
+test -z "$DRY_RUN" || exit 0
+
 ./spark-openstack \
 	--create \
 	--deploy-spark \
