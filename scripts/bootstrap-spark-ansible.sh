@@ -26,7 +26,7 @@ fi
 clone_cmd+=("${git_remote_url/git@github.com:/https://github.com/}")
 
 # shellcheck disable=SC2087
-ssh "$@" -- /bin/bash <<-EOF
+ssh -T "$@" -- /bin/bash <<-EOF
 set -euo pipefail
 if test -d ~/spark-openstack; then 
 	if test -n "${NO_RECLONE_REPO:-}"; then
@@ -47,4 +47,4 @@ if test -d ~/spark-openstack; then
 fi
 ${clone_cmd[@]}
 EOF
-ssh "$@" < "$scripts/_bootstrap-openstack-manager.sh"
+ssh -T "$@" < "$scripts/_bootstrap-openstack-manager.sh"

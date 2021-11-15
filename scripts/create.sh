@@ -10,13 +10,21 @@ source "$scripts/_common.sh"
 
 # shellcheck disable=SC2087
 exec ssh "$@" /bin/bash <<EOF
-cd ~/spark-openstack || exit 1
+set -euo pipefail
 
-test \
+cd ~/spark-openstack >/dev/null || exit 2
+
+if ! test \
 	-a ./spark-openstack \
 	-a -a .venv/bin/activate \
-&& source .venv/bin/activate \
-&& ./spark-openstack \
+; then
+	echo 'Virtual environment or entrypoint not found' >&2
+	exit 3
+fi
+
+source .venv/bin/activate
+
+./spark-openstack \
 	--create \
 	--deploy-spark \
 	-k "$KEY" \
