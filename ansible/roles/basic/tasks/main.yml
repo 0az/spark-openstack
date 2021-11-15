@@ -38,20 +38,17 @@
 - name: disable net.ipv6.conf.all.disable_ipv6
   become: yes
   sysctl: name=net.ipv6.conf.all.disable_ipv6 value=1 state=present
-  tags:
-    - prepare
+  tags: prepare
 
 - name: disable net.ipv6.conf.lo.disable_ipv6
   become: yes
   sysctl: name=net.ipv6.conf.lo.disable_ipv6 value=1 state=present
-  tags:
-    - prepare
+  tags: prepare
 
 - name: increase hard file limits
   become: yes
   pam_limits: domain=* limit_type=hard limit_item=nofile value=1000000
-  tags:
-    - prepare
+  tags: prepare
 
 - name: increase soft file limits
   become: yes
@@ -60,11 +57,9 @@
 - name: create hadoop group
   become: yes
   group: name=hadoop state=present
-  tags:
-    - prepare
+  tags: prepare
 
 - name: create hadoop user
   become: yes
   user: name={{ hadoop_user }} comment="Hadoop user" group=hadoop shell=/bin/bash
-  tags:
-    - prepare
+  tags: prepare
