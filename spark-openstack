@@ -7,4 +7,4 @@ if [ -f ./admin-openrc.sh ]; then
 fi
 cd ./ansible || exit 1
 
-exec python ./spark_openstack_cmd.py "$@"
+exec python ./spark_openstack.py "$@"
