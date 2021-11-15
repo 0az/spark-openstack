@@ -5,10 +5,11 @@
     - include_role:
         name: create
       when: create_cluster is defined and create_cluster == true or act == "destroy"
+      tags: create
     - include_role:
         name: os_facts
       when: act != "destroy"
-  tags: always
+      tags: always
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
   tasks:
@@ -20,8 +21,10 @@
       when: create_cluster is defined and create_cluster == true
     - include_role:
         name: cpus
+      tags: always
     - include_role:
         name: mem_mb
+      tags: always
 
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
