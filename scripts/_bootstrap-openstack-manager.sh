@@ -52,24 +52,37 @@ fi
 
 cat > "$tmp/coalesce_hosts.py" <<EOF
 import sys
+from ipaddress import ip_address
+
+
 if len(sys.argv) != 2:
     sys.exit(1)
 
 d = {}
+lines = []
 with open(sys.argv[1]) as f:
     for line in f:
         line = line.strip()
-        if not line or line[0] == '#':
+        if not line:
+            lines.append('')
             continue
+        if line.startswith('#'):
+            lines.append(line)
+            continue
+
         addr, *rest = line.split()
+        lines.append(addr)
         l = d.setdefault(addr, [])
         for v in rest:
             if v not in l:
                 l.append(v)
 
-lines = sorted(d.items(), key=lambda t: tuple(map(int, t[0].split('.'))))
-for addr, names in lines:
-    print(f'{addr}\t{" ".join(names)}')
+for text in lines:
+    if text in d:
+        names = d[text]
+        print(f'{text}\t{" ".join(names)}')
+    else:
+        print(text)
 EOF
 
 python3 "$tmp/coalesce_hosts.py" "$tmp/hosts.txt" | sudo tee "$tmp/hosts"
