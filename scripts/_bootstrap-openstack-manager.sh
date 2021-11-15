@@ -58,7 +58,7 @@ if len(sys.argv) != 2:
 d = {}
 with open(sys.argv[1]) as f:
     for line in f:
-        if not line:
+        if line.isspace():
             continue
         addr, *rest = line.split()
         l = d.setdefault(addr, [])
