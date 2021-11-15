@@ -75,7 +75,7 @@ parser.add_argument(
 )
 parser.add_argument('cluster_name', help="Name for your cluster")
 parser.add_argument('option', nargs='?')
-parser.add_argument('--print-command')
+parser.add_argument('--print-command', action='store_true')
 parser.add_argument('-k', '--key-pair')
 parser.add_argument("-i", "--identity-file")
 parser.add_argument("-s", "--slaves", type=int)
