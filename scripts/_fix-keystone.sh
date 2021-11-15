@@ -1,9 +1,13 @@
 #! /bin/bash
 
+if [[ -z "$API_HOST" ]]; then
+	exit 1
+fi
+
 sudo mysql keystone <<EOF
 START transaction;
 UPDATE keystone.endpoint
-	SET url = replace(url, 'http://ctl:', 'http://ctl.afzhou-110023.orion-pg0.utah.cloudlab.us:')
+	SET url = regexp_replace(url, 'http://.+:', '$API_HOST:')
 	WHERE interface = 'public'
 ;
 SELECT id, url

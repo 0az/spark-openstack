@@ -4,4 +4,5 @@ scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd || exit
 
 source "$scripts/_common.sh"
 
-ssh "$@" < "$scripts/_fix-keystone.sh"
+PYTHONPATH=scripts/.. \
+	python3 -m scripts.fix_keystone "$@"
