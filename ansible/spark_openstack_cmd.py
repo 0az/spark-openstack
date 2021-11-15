@@ -3,7 +3,7 @@
 
 # FIXME: Serialize extra vars to json file, and invoke using --extra-vars=@file
 # FIXME: Fix all of the ansible templates that use 'None' as a string instead of null
-# FIXME: Use named pipes or tmpdirs (path passed via vars) to extract IPs
+# FIXME: Use openstacksdk to extract IPs
 
 
 import argparse
