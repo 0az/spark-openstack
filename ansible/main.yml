@@ -8,6 +8,7 @@
     - include_role:
         name: os_facts
       when: act != "destroy"
+  tags: always
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
   tasks:
@@ -25,6 +26,7 @@
 
 - hosts: "{{ cluster_name }}_master:{{ cluster_name }}_slaves"
   become: yes
+  tags: install
   tasks:
     - name: install base
       include_role:
@@ -44,6 +46,7 @@
       when: mountnfs
 
 - hosts: "{{ cluster_name }}_master"
+  tags: deploy
   tasks:
     - include_role:
         name: spark_master
