@@ -6,7 +6,7 @@ from pathlib import Path
 import openstack
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-KEY_NAME = 'admin'
+KEY_NAME = os.getenv('KEY_NAME', 'admin')
 
 
 def upload_key(conn: openstack.connection.Connection, public_key: str):
