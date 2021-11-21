@@ -3,9 +3,6 @@
 #FIXME: need full path to be included directly
 
 - block:
-  - name: Python package prefix
-    debug: var=apt_pkg_pref
-
   - name: install packages
     package: name={{ item }} state=present
     with_items:
@@ -33,7 +30,7 @@
     become: yes
     pip:
       name:
-        - jupyter
+        - jupyterlab
         - matplotlib
         - numpy
         - pandas
@@ -49,7 +46,7 @@
     register: result
     ignore_errors: True
     until: result is success
-    retries: 3
+    retries: 2
 
   become: True
   become_user: root
