@@ -3,8 +3,6 @@
 #FIXME: need full path to be included directly
 
 - block:
-  - include_vars: "{{roles_dir|default('roles')}}/jupyter/vars/python3.yml"
-
   - name: Python package prefix
     debug: var=apt_pkg_pref
 
