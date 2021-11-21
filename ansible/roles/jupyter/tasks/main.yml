@@ -20,7 +20,6 @@
   - jupyter_install
 
 - name: change jupyter_notebook_config.py
-
   lineinfile:
     dest=/home/{{ hadoop_user }}/.jupyter/jupyter_notebook_config.py
     state=present insertafter=EOF
@@ -32,19 +31,19 @@
 
 - name: copy toree kernel config
   become: yes
-  file: path=/usr/local/share/jupyter/kernels/toree_python{{python_version}} state=directory
+  file: path=/usr/local/share/jupyter/kernels/toree_python3 state=directory
   tags:
   - install
   - jupyter_install
 - name: copy toree kernel config
   become: yes
-  template: src=toree_kernel.json.j2 dest=/usr/local/share/jupyter/kernels/toree_python{{python_version}}/kernel.json
+  template: src=toree_kernel.json.j2 dest=/usr/local/share/jupyter/kernels/toree_python3/kernel.json
   tags:
   - install
   - jupyter_install
 
 - name: download scala
-  shell: wget http://www.scala-lang.org/files/archive/scala-2.10.4.deb
+  shell: wget http://www.scala-lang.org/files/archive/scala-2.13.7.deb
   when: not skip_install|default(False)
   tags:
   - install
@@ -78,4 +77,4 @@
   become_user: root
   when: install_as_service
 
-- debug: msg="jupyter install finished on {{ hostvars[inventory_hostname].ansible_ssh_host }} (python_version={{ python_version }})"
+- debug: msg="jupyter install finished on {{ hostvars[inventory_hostname].ansible_ssh_host }} (python_version=3)"

@@ -1,4 +1,4 @@
 ---
-python_version: 2
+python_version: 3
 install_as_service: False
 jupyter_service_name: jupyter

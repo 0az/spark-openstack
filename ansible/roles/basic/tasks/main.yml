@@ -10,17 +10,16 @@
     file: group_vars/all/openjdk.yml
   when: not use_oracle_java|default(False)
 
-- name: Install Python3
-  become: yes
-  apt:
-    name: python3
-    update_cache: yes
-
 - name: update apt cache
   become: yes
   apt: update_cache=yes
   when: not skip_packages|default(False)
   retries: 2
+
+- name: Install Python3
+  become: yes
+  apt:
+    name: python3
 
 - name: install packages
   become: yes
@@ -32,8 +31,6 @@
   become: yes
   package: name={{ java_package }} state=present
   when: not skip_packages|default(False)
-
-
 
 - name: disable net.ipv6.conf.all.disable_ipv6
   become: yes

@@ -5,7 +5,7 @@ Documentation=man:jupyter(1)
 [Service]
 User={{ hadoop_user }}
 WorkingDirectory=/home/{{ hadoop_user }}
-ExecStart=/usr/local/bin/jupyter notebook --no-browser
+ExecStart=/opt/spark-openstack-venv/bin/python -m jupyter lab --no-browser
 KillSignal=SIGINT
 
 [Install]
