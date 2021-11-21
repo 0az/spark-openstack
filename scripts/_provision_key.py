@@ -24,8 +24,10 @@ if __name__ == '__main__':
 
     ap.add_argument('public_key_path', type=Path)
     args = ap.parse_args()
-
-    os.environ['OS_CLIENT_CONFIG_FILE'] = str(PROJECT_ROOT / 'clouds.yaml')
-
-    conn = openstack.connect(cloud='openstack')
+    clouds_yaml = PROJECT_ROOT / 'clouds.yaml'
+    if clouds_yaml.exists():
+        os.environ['OS_CLIENT_CONFIG_FILE'] = str(clouds_yaml)
+        conn = openstack.connect(cloud='openstack')
+    else:
+        conn = openstack.connect()
     upload_key(conn, args.public_key_path.read_text())
