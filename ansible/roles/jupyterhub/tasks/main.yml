@@ -26,7 +26,7 @@
 
   - name: install pip packages
     become: yes
-    pip: name={{ item }} state=present executable=pip{{ python_version }}
+    pip: name={{ item }} state=present executable=pip3
     with_items:
       - jupyterhub
 
