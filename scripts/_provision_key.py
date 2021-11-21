@@ -3,6 +3,7 @@
 import argparse
 import os
 from pathlib import Path
+
 import openstack
 
 PROJECT_ROOT = Path(__file__).resolve().parent
