@@ -29,11 +29,12 @@ if ! test \
 fi
 
 source .venv/bin/activate
+source admin-openrc.sh
 
 ssh-keygen -y -f ~/.ssh/admin_ed25519 \
 | awk '{ print $1, $2, "admin@ctl"; }' \
 > ~/.ssh/admin_ed25519.pub
 
 sudo cp -a ~/.ssh/admin_ed25519 /root/admin_ed25519
-python scripts/_provision_key.py ~/.ssh/admin_ed25519
+python scripts/_provision_key.py ~/.ssh/admin_ed25519.pub
 EOF
