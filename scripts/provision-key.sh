@@ -8,9 +8,9 @@ if ! test -r "$PRIVATE_KEY"; then
 	exit 1
 fi
 
-ssh "$@" -- /bin/bash -euo \
+ssh "$@" -- /bin/bash -eu \
 	-c "mkdir ~/.ssh; umask 077; touch ~/.ssh/admin_ed25519"
-ssh "$@" -- /bin/bash -euo \
+ssh "$@" -- /bin/bash -eu \
 	-c "cat > ~/.ssh/admin_ed25519" \
 	< "$PRIVATE_KEY"
 
