@@ -8,8 +8,11 @@ if ! test -r "$PRIVATE_KEY"; then
 	exit 1
 fi
 
-ssh "$@" -- /bin/bash -eu \
-	-c "mkdir ~/.ssh; umask 077; touch ~/.ssh/admin_ed25519"
+ssh "$@" -- /bin/bash <<EOF
+	mkdir -p ~/.ssh
+	umask 077
+	touch ~/.ssh/admin_ed25519
+EOF
 ssh "$@" -- /bin/bash -eu \
 	-c "cat > ~/.ssh/admin_ed25519" \
 	< "$PRIVATE_KEY"
@@ -27,7 +30,7 @@ fi
 
 source .venv/bin/activate
 
-ssh-keygen -y -f admin_ed25519 \
+ssh-keygen -y -f ~/.ssh/admin_ed25519 \
 | awk '{ print $1, $2, "admin@ctl"; }' \
 > ~/.ssh/admin_ed25519.pub
 
