@@ -1,19 +1,19 @@
 ---
 
 - include: prepare.yml
-  when: not skip_install|default(False)
+  when: not skip_install
 
 - name: setup toree
   become: yes
   shell: /opt/spark-openstack-venv/bin/python -m jupyter toree install
-  when: not skip_install|default(False)
+  when: not skip_install
   tags:
   - install
   - jupyter_install
 
 - name: create config
-  shell: jupyter notebook --generate-config -y
-  when: not skip_install|default(False)
+  shell: /opt/spark-openstack-venv/bin/python -m jupyter notebook --generate-config -y
+  when: not skip_install
   become: false
   tags:
   - install
@@ -42,35 +42,32 @@
   - install
   - jupyter_install
 
-- name: download scala
-  shell: wget http://www.scala-lang.org/files/archive/scala-2.13.7.deb
-  when: not skip_install|default(False)
+- name: Install Scala
   tags:
   - install
   - jupyter_install
+  - scala
+  block:
+  - name: Check Scala
+    command: dpkg-query -W scala
+    register: scala_check
+    failed_when: scala_check.rc > 1
+    changed_when: scala_check.rc == 1
+  - name: Download Scala
+    get_url:
+      url=http://www.scala-lang.org/files/archive/scala-2.13.7.deb
+      dest=/tmp/scala.deb
+    when: not skip_install and scala_check.rc == 1
 
-- name: get dependencies
-  package: name=libjansi-java state=present
-  become: yes
-  tags:
-  - install
-  - jupyter_install
+  - name: get dependencies
+    package: name=libjansi-java state=present
+    become: yes
+    when: not skip_install and scala_check.rc == 1
 
-- name: do magic
-  become: yes
-  shell: apt-get update
-  when: not skip_install|default(False)
-  tags:
-  - install
-  - jupyter_install
-
-- name: install scala
-  become: yes
-  shell: apt-get install -y scala
-  when: not skip_install|default(False)
-  tags:
-  - install
-  - jupyter_install
+  - name: install scala
+    become: yes
+    apt: deb=/tmp/scala.deb
+    when: not skip_install and scala_check.rc == 1
 
 - include: service.yml
   become: yes
