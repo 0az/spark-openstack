@@ -311,7 +311,7 @@ def make_extra_vars(action: str = args.act):
     extra_vars["deploy_jupyter"] = args.deploy_jupyter
     if args.deploy_jupyter:
         extra_vars['toree_version'] = toree_versions[
-            extra_args['spark_version'][0]
+            extra_vars['spark_version'][0]
         ]
 
     extra_vars["deploy_jupyterhub"] = args.deploy_jupyterhub
