@@ -21,7 +21,7 @@
       - python3-tk # needed for pyspark
       # Deps
       - libfreetype6-dev
-      - libpng12-dev
+      - libpng-dev
       - pkg-config
     register: result
     ignore_errors: True
