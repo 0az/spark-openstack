@@ -7,13 +7,13 @@
 
 
 import argparse
+import json
 import os
 import subprocess
 import sys
 import urllib
-from zipfile import ZipFile
-
 from urllib.parse import urlparse
+from zipfile import ZipFile
 
 spark_versions = {
     # 2.4.4 supports 3.1 as well, but handling SHA hashes in Ansible is hard
@@ -253,13 +253,16 @@ def make_extra_vars(action: str = args.act):
         os_key_name='key_pair',
         flavor='instance_type',
         master_flavor='master_instance_type',
-        floating_ip_pool='floating_ip_pool',
         virtual_network='virtual_network',
         ansible_user='hadoop_user',
         ansible_ssh_private_key_file='identity_file',
         hadoop_user='hadoop_user',
     )
-    extra_vars.update((target, getattr(args, key)) for target, key in mapping.items())
+    extra_vars.update(
+        (target, getattr(args, key)) for target, key in mapping.items()
+    )
+    # HACK: There's a lot of Ansible code that checks against the string 'None'
+    extra_vars['floating_ip_pool'] = args.floating_ip_pool or 'None'
 
     extra_vars["os_project_name"] = os.getenv('OS_PROJECT_NAME') or os.getenv(
         'OS_TENANT_NAME'
@@ -307,7 +310,8 @@ def make_extra_vars(action: str = args.act):
 
     extra_vars["deploy_jupyter"] = args.deploy_jupyter
     if args.deploy_jupyter:
-        extra_vars["toree_version"] = toree_versions[
+        extra_vars['toree_version'] = toree_versions[
+            extra_args['spark_version'][0]
         ]
 
     extra_vars["deploy_jupyterhub"] = args.deploy_jupyterhub
@@ -370,7 +374,12 @@ def get_master_ip():
     extra_vars = make_extra_vars()
     extra_vars['extended_role'] = 'master'
     res = subprocess.check_output(
-        [ansible_playbook_cmd, "--extra-vars", repr(extra_vars), "get_ip.yml"]
+        [
+            ansible_playbook_cmd,
+            "--extra-vars",
+            json.dumps(extra_vars),
+            "get_ip.yml",
+        ]
     )
     return parse_host_ip(res)
 
@@ -379,7 +388,12 @@ def get_ip(role):
     extra_vars = make_extra_vars()
     extra_vars['extended_role'] = role
     res = subprocess.check_output(
-        [ansible_playbook_cmd, "--extra-vars", repr(extra_vars), "get_ip.yml"]
+        [
+            ansible_playbook_cmd,
+            "--extra-vars",
+            json.dumps(extra_vars),
+            "get_ip.yml",
+        ]
     )
     return parse_host_ip(res)
 
@@ -391,9 +405,9 @@ extra_vars = make_extra_vars()
 
 if args.act == "launch":
     cmdline_create = cmdline[:]
-    cmdline_create.extend(["main.yml", "--extra-vars", repr(extra_vars)])
+    cmdline_create.extend(["main.yml", "--extra-vars", json.dumps(extra_vars)])
     if args.print_command:
-        cmdline_create[-1] = '"%s"' % repr(extra_vars)
+        cmdline_create[-1] = '"%s"' % json.dumps(extra_vars)
         print(' '.join(cmdline_create))
         sys.exit(0)
     subprocess.call(cmdline_create)
@@ -414,7 +428,7 @@ elif args.act == "destroy":
     )
     extra_vars = make_extra_vars()
     cmdline_create = cmdline[:]
-    cmdline_create.extend(["main.yml", "--extra-vars", repr(extra_vars)])
+    cmdline_create.extend(["main.yml", "--extra-vars", json.dumps(extra_vars)])
     subprocess.call(cmdline_create)
 elif args.act == "get-master":
     print(get_master_ip())
@@ -432,13 +446,13 @@ elif args.act == "config":
         cmdline_inventory.extend(("--skip-tags", "spark_install,cassandra"))
 
     cmdline_inventory.extend(
-        ["%s.yml" % args.option, "--extra-vars", repr(extra_vars)]
+        ["%s.yml" % args.option, "--extra-vars", json.dumps(extra_vars)]
     )
     subprocess.call(cmdline_inventory)
 elif args.act == "runner":
     cmdline_create = cmdline[:]
     cmdline_create.extend(
-        ["prepare_internal_runner.yml", "--extra-vars", repr(extra_vars)]
+        ["prepare_internal_runner.yml", "--extra-vars", json.dumps(extra_vars)]
     )
     subprocess.call(cmdline_create)
     runner_ip = get_ip('runner')
