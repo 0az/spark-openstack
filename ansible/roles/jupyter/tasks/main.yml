@@ -5,7 +5,7 @@
 
 - name: setup toree
   become: yes
-  shell: jupyter toree install
+  shell: /opt/spark-openstack-venv/bin/python -m jupyter toree install
   when: not skip_install|default(False)
   tags:
   - install
