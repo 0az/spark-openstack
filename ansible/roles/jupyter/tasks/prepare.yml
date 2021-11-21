@@ -41,7 +41,7 @@
         - scikit-learn
         - scipy
         - seaborn
-        - "toree=={{ toree_version }}"
+        - "toree~={{ toree_version }}"
       state: present
       virtualenv: /opt/spark-openstack-venv/
       virtualenv_command: /usr/bin/python3 -m venv

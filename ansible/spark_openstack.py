@@ -46,10 +46,8 @@ spark_versions = {
 }
 
 toree_versions = {
-    "1": "https://www.apache.org/dist/incubator/toree/0.1.0-incubating/toree-pip/apache-toree-0.1.0.tar.gz",
-    "2": "https://www.apache.org/dist/incubator/toree/0.2.0-incubating/toree-pip/toree-0.2.0.tar.gz",
-    "3": "https://www.apache.org/dist/incubator/toree/0.3.0-incubating/toree-pip/toree-0.3.0.tar.gz",
-    "4": "https://www.apache.org/dist/incubator/toree/0.4.0-incubating/toree-pip/toree-0.4.0.tar.gz",
+    "1": "0.1",
+    "2": "0.4",
 }
 
 
@@ -310,7 +308,6 @@ def make_extra_vars(action: str = args.act):
     extra_vars["deploy_jupyter"] = args.deploy_jupyter
     if args.deploy_jupyter:
         extra_vars["toree_version"] = toree_versions[
-            extra_vars["spark_version"][0]
         ]
 
     extra_vars["deploy_jupyterhub"] = args.deploy_jupyterhub
