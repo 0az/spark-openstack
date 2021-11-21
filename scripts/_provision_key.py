@@ -16,7 +16,10 @@ def upload_key(conn: openstack.connection.Connection, public_key: str):
         return
 
     keypair = conn.compute.create_keypair(name=KEY_NAME, public_key=public_key)
-    print(f'Key {KEY_NAME} created with id {keypair.id}')
+    print(f'Key {KEY_NAME} created with:')
+    print(f'\tid: {keypair.id}')
+    print(f'\tfingerprint: {keypair.fingerprint}')
+    print(f'\tpublic key: {keypair.public_key}')
 
 
 if __name__ == '__main__':
