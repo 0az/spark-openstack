@@ -42,7 +42,6 @@
       state: present
       virtualenv: /opt/spark-openstack-venv/
       virtualenv_command: /usr/bin/python3 -m venv
-      virtualenv_python: python3
     register: result
     ignore_errors: True
     until: result is success
