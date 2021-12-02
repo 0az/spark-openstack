@@ -40,6 +40,7 @@ args=(
 
 test -z '$NO_DEPLOY_SPARK' && args+=(--deploy-spark)
 test -z '$NO_DEPLOY_JUPYTER' && args+=(--deploy-jupyter)
+test -z '$NO_PREPARE' -o -z '$SKIP_PREPARE' && args+=(--skip-prepare)
 
 args+=(
 		-k admin

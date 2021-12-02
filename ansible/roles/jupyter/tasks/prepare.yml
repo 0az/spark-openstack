@@ -70,8 +70,8 @@
     ignore_errors: True
     until: result is success
     retries: 3
-    async: 1000
-    poll: 0
+    # async: 1000
+    # poll: 0
 
   - name: Install pip packages (Python3.7 with PySpark)
     become: yes
@@ -93,18 +93,18 @@
     ignore_errors: True
     until: result is success
     retries: 3
-    async: 1000
-    poll: 0
+    # async: 1000
+    # poll: 0
 
-  - name: Wait on Async
-    async_status:
-      jid: "{{ item }}"
-    loop:
-      - "{{ py37_venv.ansible_job_id }}"
-      - "{{ py38_venv.ansible_job_id }}"
-    register: async_result
-    until: async_result.finished
-    retries: 30
+  # - name: Wait on Async
+  #   async_status:
+  #     jid: "{{ item }}"
+  #   loop:
+  #     - "{{ py37_venv.ansible_job_id }}"
+  #     - "{{ py38_venv.ansible_job_id }}"
+  #   register: async_result
+  #   until: async_result.finished
+  #   retries: 30
 
   - name: Install PySpark Kernel
     become: yes

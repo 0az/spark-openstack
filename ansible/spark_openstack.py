@@ -406,6 +406,8 @@ extra_vars = make_extra_vars()
 if args.act == "launch":
     cmdline_create = cmdline[:]
     cmdline_create.extend(["main.yml", "--extra-vars", json.dumps(extra_vars)])
+    if args.skip_prepare:
+        cmdline_create.extend(['--skip-tags', 'prepare'])
     if args.print_command:
         cmdline_create[-1] = '"%s"' % json.dumps(extra_vars)
         print(' '.join(cmdline_create))
