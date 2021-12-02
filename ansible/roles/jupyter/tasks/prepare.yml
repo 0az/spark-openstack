@@ -109,7 +109,7 @@
   - name: Install PySpark Kernel
     become: yes
     command:
-      args:
+      argv:
         - /opt/pyspark-2.4-venv/bin/ipython
         - kernel
         - install
