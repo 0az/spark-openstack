@@ -187,6 +187,11 @@ parser.add_argument(
     help="Skip package installation (Java, rsync, etc). Image must contain all required packages.",
 )
 parser.add_argument(
+    "--skip-prepare",
+    action='store_true',
+    help="Skip certain preparation steps. Useful when rerunning after failure.",
+)
+parser.add_argument(
     "--async",
     action="store_true",
     dest='async_',
