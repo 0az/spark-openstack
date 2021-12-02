@@ -36,6 +36,20 @@
     retries: 3
     # TODO: failures are ignored
 
+  - name: Install packaging dependencies in venv (Python3.7 with PySpark)
+    become: yes
+    pip:
+      name:
+        - pip
+        - setuptools
+        - wheel
+      state: present
+      virtualenv: /opt/pyspark-2.4-venv/
+      virtualenv_command: /usr/bin/python3.7 -m venv --prompt pyspark-2.4
+    register: py37_venv
+    until: result is success
+    retries: 3
+
   - name: Install pip packages (Jupyter Host)
     become: yes
     pip:
