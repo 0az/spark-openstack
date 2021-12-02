@@ -35,12 +35,16 @@ source .venv/bin/activate
 
 args=(
 	./spark-openstack
-		--create
 )
 
+
+# Negatives (Default to including flag)
+test -z '$NO_CREATE' -a -z '$SKIP_CREATE' && args+=(--create)
 test -z '$NO_DEPLOY_SPARK' && args+=(--deploy-spark)
 test -z '$NO_DEPLOY_JUPYTER' && args+=(--deploy-jupyter)
-test -z '$NO_PREPARE' -o -z '$SKIP_PREPARE' && args+=(--skip-prepare)
+
+# Affirmatives (Default to omitting flag)
+test -n '$NO_PREPARE' -o -n '$SKIP_PREPARE' && args+=(--skip-prepare)
 
 args+=(
 		-k admin
