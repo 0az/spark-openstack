@@ -6,17 +6,19 @@ extra_usage() {
 	echo \
 		'To specify the path to the OpenStack administrative SSH key,' \
 		'set the ADMIN_KEY environment variable.'
+	echo \
+		'This ADMIN_KEY should correspond to the OpenStack key with the name "admin".'
 }
 
 source "$scripts/_common.sh"
 
-extra_args=()
-if test -z "$ADMIN_KEY"; then
-	args+=(-i "$ADMIN_KEY")
+ssh_extra_args=()
+if test -n "$ADMIN_KEY"; then
+	ssh_extra_args+=(-i "$ADMIN_KEY")
 fi
 
 # shellcheck disable=SC2087
-exec ssh "${extra_args[@]}" "$@" /bin/bash <<EOF
+exec ssh "${ssh_extra_args[@]}" "$@" /bin/bash <<EOF
 set -euo pipefail
 
 cd ~/spark-openstack >/dev/null || exit 2
