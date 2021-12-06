@@ -18,39 +18,52 @@
 #       timeout: 300
 #   when: floating_ip_pool != 'None'
 
-- name: install Python 3 if missing
-  raw: test -e /usr/bin/python3 || { sudo apt -y update && sudo apt install -y python3-minimal; }
-  delay: 10
+- name: Install Python 3 if missing
+  apt:
+    pkg:
+      - python3-minimal
 
-- name: generating key for hadoop user
+- name: Generating key for hadoop user
   user: name={{ hadoop_user }} generate_ssh_key=yes
   when: inventory_hostname == active_master_inventory_hostname
 
-- name: get the public key
+- name: Get public key
   fetch: src="/home/{{ hadoop_user }}/.ssh/id_rsa.pub" dest="files/keys/{{ cluster_name }}.pub" flat=yes
   when: inventory_hostname == active_master_inventory_hostname
 
-- name: get the private key
+- name: Get private key
   fetch: src="/home/{{ hadoop_user }}/.ssh/id_rsa" dest="files/keys/{{ cluster_name }}" flat=yes
   when: inventory_hostname == active_master_inventory_hostname
 
-- name: deploy authorized keys
+- name: Deploy authorized keys
   become: yes
-  become_user: root
   authorized_key: user={{ hadoop_user }} key={{ lookup('file', 'files/keys/{{ cluster_name }}.pub') }}
 
-- name: deploy ssh-keys
+- name: Deploy ssh-keys
   become: yes
-  become_user: root
   copy: src="files/keys/{{ cluster_name }}" dest="/home/{{ hadoop_user }}/.ssh/{{ cluster_name }}"
 
-- name: distribute ssh config
+- name: Distribute ssh config
   become: yes
-  become_user: root
   template: src=templates/config.j2 dest="/home/{{ hadoop_user }}/.ssh/config"
 
-- name: modify /etc/hosts
+- name: Modify /etc/hosts
   become: yes
-  become_user: root
-  lineinfile: dest=/etc/hosts state=present line="{{ hostvars[item].openstack.interface_ip }} {{ hostvars[item].openstack.name }}"
+  blockinfile:
+    path: /etc/hosts
+    backup: yes
+    marker: '# {mark} ANSIBLE MANAGED BLOCK {{ hostvars[item].openstack.interface_ip }}'
+    block: |
+      {{ hostvars[item].openstack.interface_ip }} {{ hostvars[item].openstack.name }}
   with_items: "{{ ansible_play_batch }}"
+
+- name: Modify /etc/hosts (on ansible manager node)
+  become: yes
+  blockinfile:
+    path: /etc/hosts
+    backup: yes
+    marker: '# {mark} ANSIBLE MANAGED BLOCK {{ hostvars[item].openstack.interface_ip }}'
+    block: |
+      {{ hostvars[item].openstack.interface_ip }} {{ hostvars[item].openstack.name }}
+  with_items: "{{ ansible_play_batch }}"
+  delegate_to: localhost
