@@ -19,6 +19,7 @@
 #   when: floating_ip_pool != 'None'
 
 - name: Install Python 3 if missing
+  become: yes
   apt:
     pkg:
       - python3-minimal
