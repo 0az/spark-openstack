@@ -63,7 +63,7 @@
   blockinfile:
     path: /etc/hosts
     backup: yes
-    marker: '# {mark} ANSIBLE MANAGED BLOCK {{ hostvars[item].openstack.interface_ip }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK {{ hostvars[item].openstack.name }}'
     block: |
       {{ hostvars[item].openstack.interface_ip }} {{ hostvars[item].openstack.name }}
   with_items: "{{ ansible_play_batch }}"

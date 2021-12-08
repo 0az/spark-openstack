@@ -6,5 +6,5 @@
 # Delay for correct connection to the created instances
 - pause:
     echo: no
-    seconds: 10
+    seconds: 20
   when: act == "launch"
