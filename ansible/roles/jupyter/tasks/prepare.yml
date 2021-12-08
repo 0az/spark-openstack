@@ -44,8 +44,8 @@
         - setuptools
         - wheel
       state: present
-      virtualenv: /opt/pyspark-2.4-venv/
-      virtualenv_command: /usr/bin/python3.7 -m venv --prompt pyspark-2.4
+      virtualenv: /opt/py3.7-pyspark2.4-venv/
+      virtualenv_command: /usr/bin/python3.7 -m venv --prompt pyspark2.4
     register: py37_venv
     until: result is success
     retries: 3
@@ -87,8 +87,8 @@
         - seaborn
         - pyspark==2.4.8
       state: present
-      virtualenv: /opt/pyspark-2.4-venv/
-      virtualenv_command: /usr/bin/python3.7 -m venv --prompt pyspark-2.4
+      virtualenv: /opt/py3.7-pyspark2.4-venv/
+      virtualenv_command: /usr/bin/python3.7 -m venv --prompt pyspark2.4
     register: py37_venv
     ignore_errors: True
     until: result is success
@@ -110,11 +110,11 @@
     become: yes
     command:
       argv:
-        - /opt/pyspark-2.4-venv/bin/ipython
+        - /opt/py3.7-pyspark2.4-venv/bin/ipython
         - kernel
         - install
         - --prefix
-        - /opt/pyspark-2.4-venv/
+        - /opt/py3.7-pyspark2.4-venv/
         - --name
         - py37-pyspark2.4
         - --display-name
