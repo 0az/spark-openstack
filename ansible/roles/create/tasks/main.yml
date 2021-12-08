@@ -6,5 +6,5 @@
 # Delay for correct connection to the created instances
 - pause:
     echo: no
-    seconds: 20
+    seconds: '{{ 5 * n_slaves }}'
   when: act == "launch"
