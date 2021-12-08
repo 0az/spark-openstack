@@ -48,7 +48,7 @@ test -n '$NO_PREPARE' -o -n '$SKIP_PREPARE' && args+=(--skip-prepare)
 
 args+=(
 		-k admin
-		-s 1
+		-s '${SPARK_WORKERS:-1}'
 		-n flat-lan-1-net
 		-t m1.xlarge
 		-m m1.xlarge
