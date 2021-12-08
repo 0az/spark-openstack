@@ -50,8 +50,8 @@ args+=(
 		-k admin
 		-s '${SPARK_WORKERS:-1}'
 		-n flat-lan-1-net
-		-t m1.xlarge
-		-m m1.xlarge
+		-t spark.custom
+		-m spark.custom
 		-a focal-server-cloudimg-amd64 
 		--spark-version 2.4.8
 		launch test-project
