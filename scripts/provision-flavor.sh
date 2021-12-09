@@ -18,5 +18,5 @@ fi
 source .venv/bin/activate
 source admin-openrc.sh
 
-python scripts/_provision_key.py
+python scripts/_provision_flavor.py
 EOF
