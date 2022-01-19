@@ -8,6 +8,20 @@ extra_usage() {
 		'set the ADMIN_KEY environment variable.'
 	echo \
 		'This ADMIN_KEY should correspond to the OpenStack key with the name "admin".'
+	echo
+	echo -n \
+		'To speed up provisioning, set the'
+	printf ' %s,' NO_CREATE NO_PREPARE NO_DEPLOY_SPARK
+	printf ' and'
+	printf ' %s,' NO_DEPLOY_JUPYTER
+	echo \
+		' environment variables to 1.'
+	echo
+	echo \
+		'Example:'
+	printf '\t'
+	echo \
+		"NO_CREATE=1 NO_PREPARE=1 NO_DEPLOY_SPARK=1 $0 ..."
 }
 
 source "$scripts/_common.sh"

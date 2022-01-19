@@ -3,8 +3,8 @@
 usage() {
 	echo 'USAGE'
 	printf '\t%s <ssh-args ...>\n\n' "$0"
-	declare -F extra_usage >/dev/null && extra_usage && echo
 	echo 'All arguments are passed through to ssh(1).'
+	declare -F extra_usage >/dev/null && echo && extra_usage
 }
 
 if [[ "$#" -lt 1 ]]; then
