@@ -24,15 +24,18 @@ extra_usage() {
 		"NO_CREATE=1 NO_PREPARE=1 NO_DEPLOY_SPARK=1 $0 ..."
 }
 
+# shellcheck source=_common.sh
 source "$scripts/_common.sh"
+# shellcheck source=_ssh_args.sh
+source "$scripts/_ssh_args.sh"
 
 ssh_extra_args=()
 if test -n "$ADMIN_KEY"; then
 	ssh_extra_args+=(-i "$ADMIN_KEY")
 fi
 
-# shellcheck disable=SC2087
-exec ssh "${ssh_extra_args[@]}" "$@" /bin/bash <<EOF
+# shellcheck disable=2087
+exec ssh "${ssh_extra_args[@]}" "${ssh_args[@]}" -- /bin/bash <<EOF
 set -euo pipefail
 
 cd ~/spark-openstack >/dev/null || exit 2

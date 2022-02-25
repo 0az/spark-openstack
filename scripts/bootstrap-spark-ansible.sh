@@ -4,7 +4,10 @@ set -euo pipefail
 
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# shellcheck source=_common.sh
 source "$scripts/_common.sh"
+# shellcheck source=_ssh_args.sh
+source "$scripts/_ssh_args.sh"
 
 git_root="$(git rev-parse --show-toplevel 2>/dev/null || echo)"
 git_remote='https://github.com/liside/spark-openstack.git'
@@ -19,6 +22,7 @@ if [[ -n "$git_root" ]]; then
 	git_remote="$(git config branch."$git_branch".remote)"
 	git_remote_url="$(git remote get-url "$git_remote")"
 fi
+
 clone_cmd=(git clone --depth=1 --single-branch)
 if [[ -n "$git_branch" ]]; then
 	clone_cmd+=(-b "$git_branch")
@@ -26,7 +30,7 @@ fi
 clone_cmd+=("${git_remote_url/git@github.com:/https://github.com/}")
 
 # shellcheck disable=SC2087
-ssh -T "$@" -- /bin/bash <<-EOF
+ssh "${ssh_args[@]}" -- /bin/bash <<-EOF
 set -euo pipefail
 if test -d ~/spark-openstack; then 
 	if test -n "${NO_RECLONE_REPO:-}"; then
@@ -47,4 +51,5 @@ if test -d ~/spark-openstack; then
 fi
 ${clone_cmd[@]}
 EOF
-ssh -T "$@" < "$scripts/_bootstrap-openstack-manager.sh"
+
+exec ssh "${ssh_args[@]}" -- /bin/bash < "$scripts/_bootstrap-openstack-manager.sh"

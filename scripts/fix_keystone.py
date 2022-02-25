@@ -32,7 +32,7 @@ def main():
     script = f'API_HOST={shlex.quote(host)}\n'
     script += Path(SCRIPTS / '_fix-keystone.sh').read_text()
 
-    args = ['ssh', '-T']
+    args = ['ssh']
     args.extend(sys.argv[1:])
     proc = subprocess.run(args, input=script, encoding='utf8')
     exit(proc.returncode)

@@ -3,8 +3,10 @@
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd || exit 1 )"
 
 source "$scripts/_common.sh"
+# shellcheck source=_ssh_args.sh
+source "$scripts/_ssh_args.sh"
 
-exec ssh "$@" -- /bin/bash -euo pipefail <<'EOF'
+exec ssh "${ssh_args[@]}" -- /bin/bash -euo pipefail <<'EOF'
 cd ~/spark-openstack >/dev/null || exit 2
 
 if ! test \

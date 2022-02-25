@@ -3,21 +3,23 @@
 scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd || exit 1 )"
 
 source "$scripts/_common.sh"
+# shellcheck source=_ssh_args.sh
+source "$scripts/_ssh_args.sh"
 
 if ! test -r "$PRIVATE_KEY"; then
 	exit 1
 fi
 
-ssh "$@" -- /bin/bash <<EOF
+ssh "${ssh_args[@]}" -- /bin/bash <<EOF
 	mkdir -p ~/.ssh
 	umask 077
 	touch ~/.ssh/admin_ed25519
 EOF
-ssh "$@" -- /bin/bash -eu \
+ssh "${ssh_args[@]}" -- /bin/bash -eu \
 	-c "cat > ~/.ssh/admin_ed25519" \
 	< "$PRIVATE_KEY"
 
-exec ssh "$@" -- /bin/bash -euo pipefail <<'EOF'
+exec ssh "${ssh_args[@]}" -- /bin/bash -euo pipefail <<'EOF'
 cd ~/spark-openstack >/dev/null || exit 2
 
 if ! test \
