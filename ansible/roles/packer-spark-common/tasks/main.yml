@@ -1,0 +1,4 @@
+- import_tasks: 00-assertions.yml
+- import_tasks: 10-configure-system.yml
+- import_tasks: 20-install-deps.yml
+- import_tasks: 30-install.yml

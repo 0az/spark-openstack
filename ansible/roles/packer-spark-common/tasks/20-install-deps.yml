@@ -1,0 +1,44 @@
+- name: Setup repositories
+  become: true
+  block:
+    - name: Install prerequisites
+      apt:
+        name:
+          - wget
+          - apt-transport-https
+          - gnupg
+        state: present
+        install_recommends: false
+        update_cache: true
+    - name: Add repo signing keys
+      apt_key:
+        url: https://packages.adoptium.net/artifactory/api/gpg/key/public
+        state: present
+    - name: Add Deadsnakes PPA
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
+        state: present
+        update_cache: false
+    - name: Add Temurin Repo
+      apt_repository:
+        repo: 'deb https://packages.adoptium.net/artifactory/deb {{ansible_facts.distribution_release}} main'
+        state: present
+        update_cache: false
+- name: Install packages
+  become: true
+  apt:
+    name:
+      # Java 11
+      - temurin-11-jdk
+      # Python
+      - python3.10
+      - python3.10-dev
+      - python3.10-distutils
+      - python3.10-venv
+      # Hadoop manager scripting dependency
+      - pdsh
+      # Other deps
+      - dstat
+      - rsync
+    state: present
+    update_cache: true

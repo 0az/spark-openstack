@@ -1,0 +1,5 @@
+- name: Assertions
+  assert:
+    that:
+      - "{{ ansible_facts.distribution.casefold() == 'ubuntu' }}"
+      - "{{ ansible_facts.architecture == 'x86_64' }}"

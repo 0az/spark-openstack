@@ -1,0 +1,2 @@
+- setup:
+    gather_subset: min

@@ -1,0 +1,8 @@
+- name: Create Spark Extra Jars directory
+  file:
+    path: '{{ spark_extra_jars_dir }}'
+    state: directory
+
+- name: Copy Spark Extra Jars
+  copy: src={{item.path}} dest={{ spark_extra_jars_dir }}/{{item.name}} owner={{ hadoop_user }} group=hadoop mode=0644
+  loop: '{{ extra_jars | default([]) }}'

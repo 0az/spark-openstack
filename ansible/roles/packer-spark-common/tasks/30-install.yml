@@ -1,0 +1,50 @@
+- name: Download Hadoop
+  get_url:
+    url: '{{ hadoop_download_url }}'
+    dest: /tmp/{{ hadoop_archive_name }}
+    checksum: '{{ hadoop_checksum }}'
+
+- name: Download Spark
+  get_url:
+    url: '{{ spark_download_url }}'
+    dest: /tmp/{{ spark_archive_name }}
+    checksum: '{{ spark_checksum }}'
+
+- name: Install Hadoop and Spark
+  become: true
+  block:
+    - name: Install Hadoop
+      unarchive:
+        src: /tmp/{{ hadoop_archive_name }}
+        dest: /opt
+        remote_src: true
+
+    - name: Install Spark
+      unarchive:
+        src: /tmp/{{ spark_archive_name }}
+        dest: /opt
+        remote_src: true
+
+    - name: Symlink Hadoop
+      file:
+        src: '{{ hadoop_artifact_name }}'
+        path: '{{ hadoop_home }}'
+        state: link
+
+    - name: Symlink Spark
+      file:
+        src: '{{ spark_artifact_name }}'
+        path: '{{ spark_home }}'
+        state: link
+
+    - name: Add {JAVA,HADOOP,SPARK}_HOME to profiles.d
+      template:
+        src: site-home.sh.j2
+        dest: /etc/profile.d/site-home.sh
+
+    - name: Create Hadoop temporary directory
+      file:
+        path: '{{ hadoop_tmp_dir }}'
+        state: directory
+        mode: '755'
+        owner: hadoop

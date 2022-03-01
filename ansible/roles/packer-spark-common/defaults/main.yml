@@ -1,0 +1,31 @@
+hadoop_version: '3.3.1'
+hadoop_checksum: |-
+  sha512:2fd0bf74852c797dc864f373ec82ffaa1e98706b309b30d1effa91ac399b477e1accc1ee74d4ccbb1db7da1c5c541b72e4a834f131a99f2814b030fbd043df66
+
+spark_version: '3.2.1'
+spark_checksum: |-
+  sha512:0923b887bffe9ce984b41e730a0059d563d0ee429f4e8c74be2df98d0b441919eff4cc3c43d79b131d3b914139df4833aee75280889643690e8c14a287552b40
+
+hadoop_artifact_name: hadoop-{{ hadoop_version }}
+hadoop_archive_name: '{{ hadoop_artifact_name }}.tar.gz'
+hadoop_download_url: |-
+  https://dlcdn.apache.org/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_archive_name }}
+
+spark_artifact_name: spark-{{ spark_version }}
+spark_archive_name: '{{ spark_artifact_name }}.tgz'
+spark_download_url: |-
+  https://dlcdn.apache.org/spark/common/spark-{{ spark_version }}/{{ spark_archive_name }}
+
+hadoop_home: /opt/hadoop
+spark_home: /opt/spark
+
+spark_extra_jars:
+spark_extra_jars_dir: '{{ spark_home }}/extra'
+
+hadoop_tmp_dir: /srv/hadoop
+
+java_home: /lib/jvm/temurin-11-jdk-amd64/
+
+cluster_manager_inventory_hostname: >-
+  {{ groups['spark-manager'] }}
+cluster_manager_ssh_key: '{{ hadoop_home }}/id_ed25519'

@@ -1,0 +1,46 @@
+- name: Create hadoop group
+  become: true
+  group:
+    name: hadoop
+    state: present
+
+- name: Create hadoop user
+  become: true
+  user:
+    name: hadoop
+    group: hadoop
+    shell: /bin/bash
+    comment: Hadoop machine user
+    state: present
+
+- name: Disable IPv6
+  become: true
+  sysctl:
+    name: '{{ item }}'
+    value: 1
+    state: present
+  loop:
+    - net.ipv6.conf.all.disable_ipv6
+    - net.ipv6.conf.lo.disable_ipv6
+
+- name: Increase file limits
+  become: true
+  pam_limits:
+    domain: '{{ item.0 }}'
+    limit_item: nofile
+    value: 1000000
+    limit_type: '{{ item.1 }}'
+  loop: |-
+    {{ ['hadoop', '@hadoop'] | product(['hard', 'soft']) }}
+
+- block:
+  - name: Ensure hadoop user .ssh exists
+    ansible.builtin.file:
+      path: /home/hadoop/.ssh
+      state: directory
+  - name: Add hadoop user ssh_config
+    ansible.builtin.template:
+      src: ssh_config.j2
+      dest: /home/hadoop/.ssh/config
+  when: >-
+    'spark-managers' not in group_names
