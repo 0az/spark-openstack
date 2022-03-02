@@ -1,4 +1,5 @@
 ansible/files/keys/
+keys/*
 packages.txt
 
 admin-openrc.sh
