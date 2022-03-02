@@ -10,17 +10,28 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 FLAVOR_NAME = 'spark.custom'
 
 
+def get_int(s: str, i: int) -> int:
+    s = os.getenv(s)
+    if not s:
+        return i
+    return int(s)
+
+
 def create_flavor(conn: openstack.connection.Connection):
     flavor = conn.compute.find_flavor(FLAVOR_NAME)
     if flavor:
         print(f'Flavor {FLAVOR_NAME} found with id {flavor.id}')
-        return
+
+        if not os.getenv('RECREATE'):
+            return
+
+        conn.compute.delete_flavor(flavor)
 
     flavor = conn.compute.create_flavor(
         name=FLAVOR_NAME,
-        disk=125,
-        vcpus=4,
-        ram=24576,
+        disk=get_int('DISK', 125),
+        vcpus=get_int('VCPUS', 4),
+        ram=get_int('RAM', 24576),
         is_public=True,
     )
     print(f'Flavor {FLAVOR_NAME} created with:')
