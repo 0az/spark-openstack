@@ -18,7 +18,7 @@ if ! test \
 fi
 
 source .venv/bin/activate
-source admin-openrc.sh
+source local/admin-openrc.sh
 
 python scripts/_provision_flavor.py
 EOF

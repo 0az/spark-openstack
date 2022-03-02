@@ -1,10 +1,13 @@
-ansible/files/keys/
-keys/*
-packages.txt
+ansible/files/keys/*
+local/*
+packer/local.auto.pkrvars.hcl
+terraform/local.auto.tfvars
 
 admin-openrc.sh
 sandbox-openrc.sh
 clouds.yaml
+
+packages.txt
 
 *.deb
 *.md*

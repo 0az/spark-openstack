@@ -7,6 +7,7 @@ source "$scripts/_common.sh"
 source "$scripts/_ssh_args.sh"
 
 if ! test -r "$PRIVATE_KEY"; then
+	echo 'Missing required environment variable PRIVATE_KEY' >&2
 	exit 1
 fi
 
@@ -31,7 +32,7 @@ if ! test \
 fi
 
 source .venv/bin/activate
-source admin-openrc.sh
+source local/admin-openrc.sh
 
 ssh-keygen -y -f ~/.ssh/admin_ed25519 \
 | awk '{ print $1, $2, "admin@ctl"; }' \

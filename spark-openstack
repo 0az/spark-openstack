@@ -2,8 +2,8 @@
 
 cd "$(dirname "$0")" || exit 1
 
-if [ -f ./admin-openrc.sh ]; then
-	source ./admin-openrc.sh
+if [ -f local/admin-openrc.sh ]; then
+	source local/admin-openrc.sh
 fi
 cd ./ansible_old || exit 1
 

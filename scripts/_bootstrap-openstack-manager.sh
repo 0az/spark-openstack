@@ -97,5 +97,5 @@ sudo mv "$tmp/hosts" /etc/hosts
 (
 	umask 077
 	sudo cat /root/setup/admin-openrc.sh > "$tmp/admin-openrc.sh"
-	mv "$tmp/admin-openrc.sh" "$repo"
+	mv "$tmp/admin-openrc.sh" "$repo/local"
 )
