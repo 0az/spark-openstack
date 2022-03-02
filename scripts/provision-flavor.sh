@@ -6,7 +6,8 @@ source "$scripts/_common.sh"
 # shellcheck source=_ssh_args.sh
 source "$scripts/_ssh_args.sh"
 
-exec ssh "${ssh_args[@]}" -- /bin/bash -euo pipefail <<'EOF'
+# shellcheck disable=2087
+exec ssh "${ssh_args[@]}" -- /bin/bash -euo pipefail <<EOF
 cd ~/spark-openstack >/dev/null || exit 2
 
 if ! test \
@@ -20,5 +21,11 @@ fi
 source .venv/bin/activate
 source local/admin-openrc.sh
 
-python scripts/_provision_flavor.py
+export RECREATE='$RECREATE'
+
+export DISK='$DISK'
+export RAM='$RAM'
+export VCPUS='$VCPUS'
+
+exec python scripts/_provision_flavor.py
 EOF
