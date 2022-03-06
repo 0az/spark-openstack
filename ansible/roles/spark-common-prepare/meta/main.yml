@@ -1,0 +1,6 @@
+collections:
+  - ansible.builtin
+
+dependencies:
+  - role: gather-facts
+  - role: spark-common-vars

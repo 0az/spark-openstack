@@ -1,0 +1,3 @@
+- import_tasks: 40-configure.yml
+  tags:
+    - configure

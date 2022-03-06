@@ -1,0 +1,11 @@
+- block:
+  - import_tasks: 00-assertions.yml
+    tags:
+      - assertions
+  - import_tasks: 10-prepare.yml
+    tags:
+      - prepare
+  - import_tasks: 40-configure.yml
+    tags:
+      - configure
+  when: not (only_vars | default(False))

@@ -1,0 +1,12 @@
+- become: true
+  become_user: hadoop
+  delegate_to: '{{ primary_cluster_manager }}'
+  delegate_facts: true
+  run_once: true
+  block:
+    - name: Start HDFS
+      command:
+        argv: '{{ hadoop_home }}/sbin/start-dfs.sh'
+    - name: Start Spark
+      command:
+        argv: '{{ spark_home }}/sbin/start-all.sh'

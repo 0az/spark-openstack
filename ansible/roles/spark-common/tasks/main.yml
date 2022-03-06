@@ -1,9 +1,0 @@
-- name: Include common vars
-  include_vars:
-    file: '{{ role_path }}/../packer-spark-common/defaults/main.yml'
-
-- name: Generate SSH key
-  community.crypto.openssh_keypair:
-    path: '{{ hadoop_home }}/id_ed25519'
-    type: ed25519
-    regenerate: never

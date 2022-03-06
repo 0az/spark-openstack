@@ -1,0 +1,16 @@
+- hosts: all
+  strategy: free
+  roles:
+    - spark-common-configure
+  tags:
+    - common
+    - workers
+  gather_facts: false
+
+- hosts: spark_managers
+  roles:
+    - spark-manager-configure
+  tags:
+    - common
+    - managers
+  gather_facts: false

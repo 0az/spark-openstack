@@ -1,0 +1,26 @@
+- become_user: hadoop
+  block:
+    - name: Copy poetry files
+      copy:
+        src: '{{ playbook_dir | dirname }}/local/{{ item }}'
+        dest: /srv/experiment/{{ item }}
+      loop:
+        - pyproject.toml
+        - poetry.lock
+
+    - name: Install packages
+      command:
+        argv:
+          - /opt/poetry/bin/poetry
+          - install
+          - --no-root
+        chdir: /srv/experiment
+      environment:
+        POETRY_VIRTUALENVS_IN_PROJECT: 1
+
+    - name: Add experiment to Spark PYTHONPATH
+      copy:
+        dest: '/opt/spark/conf/spark-env.d/experiment-pythonpath.sh'
+        content: |
+          export PYTHONPATH=/srv/experiment/.venv/lib/python3.10/site-packages/
+        mode: '644'

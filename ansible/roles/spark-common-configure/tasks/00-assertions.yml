@@ -1,0 +1,5 @@
+- name: Assertions
+  assert:
+    that:
+      - "{{ cluster_manager_addresses | length > 0 }}"
+      - "{{ cluster_worker_addresses | length > 0 }}"

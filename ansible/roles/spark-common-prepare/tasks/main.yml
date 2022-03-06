@@ -1,0 +1,15 @@
+- import_tasks: 00-assertions.yml
+  tags:
+    - assertions
+- import_tasks: 10-prepare.yml
+  tags:
+    - prepare
+- import_tasks: 20-install-deps.yml
+  tags:
+    - install-deps
+- import_tasks: 30-install.yml
+  tags:
+    - install
+- import_tasks: 40-configure.yml
+  tags:
+    - configure

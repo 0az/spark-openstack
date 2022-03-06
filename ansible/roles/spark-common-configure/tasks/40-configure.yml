@@ -1,0 +1,30 @@
+- name: Configure Hadoop/Spark
+  become: true
+  block:
+    - name: Template hadoop-core-site.xml
+      template:
+        src: hadoop-core-site.xml.j2
+        dest: '{{ hadoop_home }}/etc/hadoop/core-site.xml'
+        owner: hadoop
+        group: hadoop
+
+    - name: Template spark-defaults.conf
+      template:
+        src: spark-defaults.conf.j2
+        dest: '{{ spark_home }}/conf/spark-defaults.conf'
+        owner: hadoop
+        group: hadoop
+
+    - name: Template spark-env.sh
+      template:
+        src: spark-env.sh.j2
+        dest: '{{ spark_home }}/conf/spark-env.sh'
+        owner: hadoop
+        group: hadoop
+
+    - name: Create spark-env.d
+      file:
+        path: '{{ spark_home }}/conf/spark-env.d'
+        state: directory
+        owner: hadoop
+        group: hadoop

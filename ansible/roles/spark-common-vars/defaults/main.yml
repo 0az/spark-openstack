@@ -1,0 +1,9 @@
+# Common
+java_home: /lib/jvm/temurin-11-jdk-amd64/
+hadoop_home: /opt/hadoop
+spark_home: /opt/spark
+
+hadoop_tmp_dir: /srv/hadoop
+
+spark_extra_jars:
+spark_extra_jars_dir: '{{ spark_home }}/extra'

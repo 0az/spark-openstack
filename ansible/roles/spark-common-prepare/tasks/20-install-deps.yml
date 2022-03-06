@@ -35,10 +35,20 @@
       - python3.10-dev
       - python3.10-distutils
       - python3.10-venv
-      # Hadoop manager scripting dependency
-      - pdsh
+      # Hadoop manager scripting optional dependency
+      # XXX: Disabled because pdsh has odd interactions in general
+      # - pdsh
       # Other deps
+      - acl
       - dstat
+      - python-pip
       - rsync
     state: present
     update_cache: true
+
+- name: Install poetry
+  pip:
+    name: poetry
+    state: present
+    virtualenv: /opt/poetry
+    virtualenv_command: python3.10 -m venv

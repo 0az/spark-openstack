@@ -1,0 +1,81 @@
+- name: Prepare cluster SSH locally
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Generate cluster SSH key
+      community.crypto.openssh_keypair:
+        path: '{{ playbook_dir | dirname }}/local/cluster_ed25519'
+        type: ed25519
+        regenerate: never
+      register: ssh_keygen_cluster
+
+    - name: Template Hadoop Authorized Keys
+      lineinfile:
+        path: '{{ playbook_dir | dirname }}/local/authorized_keys_ansible'
+        line: >-
+          {{ ssh_keygen_cluster.public_key }}
+        mode: '0600'
+        state: present
+        create: true
+
+- name: Configure cluster SSH access and networking
+  become: true
+  block:
+    - name: Configure sshd
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: >-
+          AuthorizedKeysFile     .ssh/authorized_keys .ssh/authorized_keys2 .ssh/authorized_keys_ansible
+        regexp: '^#AuthorizedKeysFile'
+        state: present
+      register: configure_sshd_result
+
+    - name: Restart sshd
+      service:
+        name: ssh
+        state: restarted
+      when: configure_sshd_result.changed
+
+    - name: Copy SSH info to remotes
+      copy:
+        src: '{{ playbook_dir | dirname }}/local/{{ item.1 }}'
+        dest: '~{{ item.0 }}/.ssh/{{ item.1 }}'
+        owner: '{{ item.0 }}'
+        mode: '0600'
+      loop: >-
+        {{
+          ['hadoop', 'ubuntu']
+          | product([
+            'authorized_keys_ansible',
+            'cluster_ed25519',
+            'cluster_ed25519.pub',
+          ])
+        }}
+
+    - name: Adjust ssh_config
+      blockinfile:
+        path: /etc/ssh/ssh_config
+        block: |
+          Host spark-worker-* spark-manager-* spark-worker spark-manager localhost
+              IdentitiesOnly yes
+              IdentityFile ~/.ssh/cluster_ed25519
+              BatchMode yes
+
+    - name: Adjust /etc/hosts
+      blockinfile:
+        path: /etc/hosts
+        block: |
+          {% for name in groups.spark_managers %}
+          {{ hostvars[name].ansible_host }}    {{
+              [name, hostvars[name].ansible_hostname, hostvars[name].ansible_nodename]
+              | unique
+              | join(' ')
+          }}
+          {% endfor %}
+          {% for name in groups.spark_workers %}
+          {{ hostvars[name].ansible_host }}    {{
+              [name, hostvars[name].ansible_hostname, hostvars[name].ansible_nodename]
+              | unique
+              | join(' ')
+          }}
+          {% endfor %}

@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:
+    - import_tasks: tasks/setup-experiment-environment.yml
+      become: true
+  gather_facts: false

@@ -1,0 +1,8 @@
+- name: 'Reset cloud-init state'
+  become: true
+  command:
+    argv:
+      - cloud-init
+      - clean
+      - --logs
+      - --seed

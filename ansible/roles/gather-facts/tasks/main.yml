@@ -1,2 +1,3 @@
 - setup:
-    gather_subset: min
+    gather_subset: >-
+      {{ ['min'] + (extra_facts | default([]) | parse_list) }}

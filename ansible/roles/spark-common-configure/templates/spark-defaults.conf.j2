@@ -1,0 +1,10 @@
+spark.executor.memory   {{ spark_worker_memory_mb }}m
+spark.executor.extraLibraryPath {{ hadoop_home }}/lib/native/
+
+spark.executor.extraClassPath   {{ hadoop_home }}/etc/hadoop/
+
+spark.master    spark://{{ primary_cluster_manager_address }}:7077
+spark.eventLog.enabled true
+spark.eventLog.dir /tmp/
+
+spark.executor.instances  {{ worker_count }}

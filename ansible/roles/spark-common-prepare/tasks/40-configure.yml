@@ -27,3 +27,26 @@
         templates:
           hadoop-env.sh.j2: '{{ hadoop_home }}/etc/hadoop/hadoop-env.sh'
           hdfs-site.xml.j2: '{{ hadoop_home }}/etc/hadoop/hdfs-site.xml'
+
+    - name: Set Poetry virtualenvs.in-project
+      copy:
+        dest: /etc/profile.d/poetry-config.sh
+        content: |
+          export POETRY_VIRTUALENVS_IN_PROJECT=true
+
+    - name: Create experiment directory
+      file:
+        path: /srv/experiment
+        state: directory
+        owner: hadoop
+        group: hadoop
+        mode: '2755'
+
+    - name: Set Poetry virtualenvs.in-project for hadoop user
+      become_user: hadoop
+      command:
+        argv:
+          - /opt/poetry/bin/poetry
+          - config
+          - virtualenvs.in-project
+          - 'true'

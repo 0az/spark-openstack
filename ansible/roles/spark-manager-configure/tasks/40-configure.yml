@@ -1,0 +1,35 @@
+- become: true
+  block:
+    # XXX: Nothing uses this - remove?
+    # - name: Add cluster managers list
+    #   template:
+    #     src: spark-conf-managers.j2
+    #     dest: '{{ spark_home }}/conf/masters'
+    #     owner: hadoop
+    #     group: hadoop
+
+    - name: Add cluster workers list
+      template:
+        src: spark-conf-workers.j2
+        dest: '{{ spark_home }}/conf/workers'
+        owner: hadoop
+        group: hadoop
+      loop:
+        - '{{ hadoop_home }}'
+        - '{{ spark_home }}'
+
+    - name: Ensure HDFS tmpdir is writable
+      file:
+        path: '{{ hadoop_tmp_dir }}'
+        state: directory
+        owner: hadoop
+        group: hadoop
+        mode: '2755'
+
+    - name: Format HDFS (if not formatted)
+      become_user: hadoop
+      shell:
+        cmd: >-
+          {{ hadoop_home | quote }}/bin/hdfs namenode -format -nonInteractive \
+          && touch {{ hadoop_home | quote }}/etc/.hdfs-formatted
+        creates: "{{ hadoop_home }}/etc/.hdfs-formatted"
