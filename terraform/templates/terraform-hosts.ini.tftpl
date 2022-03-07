@@ -1,0 +1,30 @@
+[spark]
+
+[spark:vars]
+ansible_user=ubuntu
+ansible_ssh_common_args=-o StrictHostKeyChecking=no -o IdentitiesOnly=yes -J
+%{~ if ansible-bastion.host != "" ~}
+%{ if ansible-bastion.user != "" ~}
+ ${ansible-bastion.user}@
+%{~ else ~}
+${" "}
+%{~ endif ~}
+${ansible-bastion.host}
+%{~ endif ~}
+%{ for file in identity-files ~}
+ -i ${file}
+%{~ endfor }
+
+[spark:children]
+spark_managers
+spark_workers
+
+[spark_managers]
+%{ for node in managers ~}
+${node.name} ansible_host=${node.access_ip_v4}
+%{ endfor ~}
+
+[spark_workers]
+%{ for node in workers ~}
+${node.name} ansible_host=${node.access_ip_v4}
+%{ endfor ~}
