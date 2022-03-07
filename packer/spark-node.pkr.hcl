@@ -7,6 +7,9 @@ packer {
   }
 }
 
+variable "openstack-image-name" {
+  type = string
+}
 variable "openstack-flavor" {
   type = string
 }
@@ -41,10 +44,10 @@ locals {
 
 source "openstack" "ubuntu" {
   image_name = "spark-node"
-  source_image_name = "focal-server-cloudimg-amd64"
+  source_image_name = var.openstack-image-name
   ssh_username = "ubuntu"
   flavor = var.openstack-flavor
-  floating_ip_network = var.openstack-external-network
+  # floating_ip_network = var.openstack-external-network
   networks = [var.openstack-network]
   communicator = "ssh"
   ssh_keypair_name = var.openstack-keypair-name
@@ -75,9 +78,11 @@ build {
     inventory_file_template = templatefile(
       "${abspath(path.root)}/templates/inventory-file-template.pkr.hcl",
       {
-        bastion-user = var.bastion-user,
-        bastion-host = var.bastion-host,
-        keys = [
+        ansible-bastion = {
+          user = var.bastion-user,
+          host = var.bastion-host,
+        }
+        identity-files = [
           var.openstack-private-key-file,
           var.bastion-private-key-file,
         ]
