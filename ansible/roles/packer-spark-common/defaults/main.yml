@@ -11,10 +11,10 @@ hadoop_archive_name: '{{ hadoop_artifact_name }}.tar.gz'
 hadoop_download_url: |-
   https://dlcdn.apache.org/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_archive_name }}
 
-spark_artifact_name: spark-{{ spark_version }}
+spark_artifact_name: spark-{{ spark_version }}-bin-without-hadoop
 spark_archive_name: '{{ spark_artifact_name }}.tgz'
 spark_download_url: |-
-  https://dlcdn.apache.org/spark/common/spark-{{ spark_version }}/{{ spark_archive_name }}
+  https://dlcdn.apache.org/spark/spark-{{ spark_version }}/{{ spark_archive_name }}
 
 hadoop_home: /opt/hadoop
 spark_home: /opt/spark
@@ -29,3 +29,7 @@ java_home: /lib/jvm/temurin-11-jdk-amd64/
 cluster_manager_inventory_hostname: >-
   {{ groups['spark-manager'] }}
 cluster_manager_ssh_key: '{{ hadoop_home }}/id_ed25519'
+
+skip_steps:
+skip_steps_list: >-
+  {{ skip_steps | parse_list }}

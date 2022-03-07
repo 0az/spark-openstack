@@ -1,8 +1,29 @@
-- name: Create Spark Extra Jars directory
-  file:
-    path: '{{ spark_extra_jars_dir }}'
-    state: directory
+- become: true
+  block:
+    - name: Create Spark Extra Jars directory
+      file:
+        path: '{{ spark_extra_jars_dir }}'
+        state: directory
+        owner: hadoop
+        group: hadoop
 
-- name: Copy Spark Extra Jars
-  copy: src={{item.path}} dest={{ spark_extra_jars_dir }}/{{item.name}} owner={{ hadoop_user }} group=hadoop mode=0644
-  loop: '{{ extra_jars | default([]) }}'
+    - name: Copy Spark Extra Jars
+      copy:
+        src: '{{ item.path }}'
+        dest: '{{ spark_extra_jars_dir }}/{{item.name}}'
+        owner: hadoop
+        group: hadoop
+        mode: '0644'
+      loop: '{{ extra_jars | default([]) }}'
+
+    - name: 'Apply templates'
+      template:
+        src: '{{ item.key }}'
+        dest: '{{ item.value }}'
+        owner: hadoop
+        group: hadoop
+      loop: '{{ templates | dict2items }}'
+      vars:
+        templates:
+          hadoop-env.sh.j2: '{{ hadoop_home }}/etc/hadoop/hadoop-env.sh'
+          hdfs-site.xml.j2: '{{ hadoop_home }}/etc/hadoop/hdfs-site.xml'

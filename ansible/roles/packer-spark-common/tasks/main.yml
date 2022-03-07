@@ -1,4 +1,15 @@
 - import_tasks: 00-assertions.yml
-- import_tasks: 10-configure-system.yml
+  when: >-
+    'assertions' not in (skip_steps_list or [])
+- import_tasks: 10-prepare.yml
+  when: >-
+    'prepare' not in (skip_steps_list or [])
 - import_tasks: 20-install-deps.yml
+  when: >-
+    'install-deps' not in (skip_steps_list or [])
 - import_tasks: 30-install.yml
+  when: >-
+    'install' not in (skip_steps_list or [])
+- import_tasks: 40-configure.yml
+  when: >-
+    'configure' not in (skip_steps_list or [])

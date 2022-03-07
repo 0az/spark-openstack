@@ -25,7 +25,7 @@
 
 - name: Increase file limits
   become: true
-  pam_limits:
+  community.general.pam_limits:
     domain: '{{ item.0 }}'
     limit_item: nofile
     value: 1000000
@@ -33,14 +33,19 @@
   loop: |-
     {{ ['hadoop', '@hadoop'] | product(['hard', 'soft']) }}
 
-- block:
+- become: true
+  block:
   - name: Ensure hadoop user .ssh exists
-    ansible.builtin.file:
+    file:
       path: /home/hadoop/.ssh
       state: directory
+      owner: hadoop
+      group: hadoop
   - name: Add hadoop user ssh_config
-    ansible.builtin.template:
+    template:
       src: ssh_config.j2
       dest: /home/hadoop/.ssh/config
+      owner: hadoop
+      group: hadoop
   when: >-
     'spark-managers' not in group_names

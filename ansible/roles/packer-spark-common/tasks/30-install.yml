@@ -17,12 +17,16 @@
       unarchive:
         src: /tmp/{{ hadoop_archive_name }}
         dest: /opt
+        owner: hadoop
+        group: hadoop
         remote_src: true
 
     - name: Install Spark
       unarchive:
         src: /tmp/{{ spark_archive_name }}
         dest: /opt
+        owner: hadoop
+        group: hadoop
         remote_src: true
 
     - name: Symlink Hadoop

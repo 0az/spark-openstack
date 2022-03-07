@@ -1,5 +1,5 @@
 - name: Include common vars
-  ansible.builtin.include_vars:
+  include_vars:
     file: '{{ role_path }}/../packer-spark-common/defaults/main.yml'
 
 - name: Generate SSH key
