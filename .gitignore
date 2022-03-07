@@ -1,7 +1,14 @@
 ansible/files/keys/*
 local/*
-packer/local.auto.pkrvars.hcl
-terraform/local.auto.tfvars
+
+packer/*.local.auto.pkrvars.hcl
+packer/*.pkrvars.hcl.bak
+
+.terraform/environment
+terraform/*.local.auto.tfvars
+terraform/*.tfvars.bak
+terraform/.terraform
+terraform/.terraform*
 
 admin-openrc.sh
 sandbox-openrc.sh
@@ -15,6 +22,8 @@ packages.txt
 *.retry
 *.sha512
 *.tar.gz
+*.tfstate
+*.tfstate.backup
 *.tgz
 *.zip
 
