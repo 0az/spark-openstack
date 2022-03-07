@@ -1,0 +1,4 @@
+# vim: set ft=conf:
+
+external-sources=true
+source-path=SCRIPTDIR
