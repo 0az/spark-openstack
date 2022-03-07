@@ -30,7 +30,7 @@ def create_flavor(conn: openstack.connection.Connection):
     flavor = conn.compute.create_flavor(
         name=FLAVOR_NAME,
         disk=get_int('DISK', 125),
-        vcpus=get_int('VCPUS', 4),
+        vcpus=get_int('VCPU', 4),
         ram=get_int('RAM', 24576),
         is_public=True,
     )

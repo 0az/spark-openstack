@@ -25,7 +25,7 @@ export RECREATE='$RECREATE'
 
 export DISK='$DISK'
 export RAM='$RAM'
-export VCPUS='$VCPUS'
+export VCPU='$VCPU'
 
 exec python scripts/_provision_flavor.py
 EOF

@@ -7,7 +7,11 @@ source "$scripts/_common.sh"
 source "$scripts/_ssh_args.sh"
 
 if ! test -r "$PRIVATE_KEY"; then
-	echo 'Missing required environment variable PRIVATE_KEY' >&2
+	PRIVATE_KEY="$scripts/../local/admin_ed25519"
+fi
+
+if ! test -e "$PRIVATE_KEY"; then
+	echo 'Error: PRIVATE_KEY does not exist' >&2
 	exit 1
 fi
 
