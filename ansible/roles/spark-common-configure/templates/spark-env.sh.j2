@@ -78,6 +78,7 @@
 
 export SPARK_LOCAL_DIRS=/tmp
 export SPARK_WORKER_CORES={{ spark_worker_cores }}
+export SPARK_WORKER_MEMORY={{ spark_worker_memory_mb }}m
 
 export HADOOP_HOME={{ hadoop_home | quote }}
 export HADOOP_CONF_DIR={{ hadoop_home | quote }}"/etc/hadoop"

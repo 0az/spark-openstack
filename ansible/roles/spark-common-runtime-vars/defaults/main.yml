@@ -10,29 +10,18 @@ cluster_worker_addresses: >-
 worker_count: >-
   {{ groups.spark_workers | length }}
 
-reserved_memory_mb: >-
-  {% if ansible_facts.memtotal_mb < 512 * 3 %}
+# https://spark.apache.org/docs/latest/hardware-provisioning.html
+worker_reserved_memory_ratio: 0.25
+
+worker_reserved_memory_mb: >-
+  {% if ansible_facts.memtotal_mb < 512 * 4 %}
   {{ 512 }}
-  {% elif ansible_facts.memtotal_mb < 1024 * 8 %}
-  {{ 1280 }}
-  {% elif ansible_facts.memtotal_mb < 1024 * 10 %}
-  {{
-    (ansible_facts.memtotal_mb // 256) * 0.15
-    | round(0, 'floor')
-    * 256
-  }}
-  {% elif ansible_facts.memtotal_mb < 1024 * 100 %}
-  {{
-    (ansible_facts.memtotal_mb // 1024) * 0.15
-    | round(0, 'floor')
-    * 1024
-  }}
   {% else %}
-  {{ 1024 * 15 }}
+  {{ ansible_facts.memtotal_mb * worker_reserved_memory_ratio }}
   {% endif %}
 
 spark_worker_memory_mb: >-
-  {{ ansible_facts.memtotal_mb - reserved_memory_mb | int }}
+  {{ ansible_facts.memtotal_mb - worker_reserved_memory_mb | int }}
 
 spark_worker_cores: >-
   {{ ansible_facts.processor_nproc }}
