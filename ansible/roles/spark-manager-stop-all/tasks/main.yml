@@ -1,9 +1,9 @@
 - become: true
   become_user: hadoop
   block:
-    - name: Stop HDFS
-      command:
-        argv: '{{ hadoop_home }}/sbin/stop-all.sh'
     - name: Stop Spark
       command:
         argv: '{{ spark_home }}/sbin/stop-all.sh'
+    - name: Stop HDFS
+      command:
+        argv: '{{ hadoop_home }}/sbin/stop-all.sh'
