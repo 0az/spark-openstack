@@ -26,10 +26,32 @@
         group: hadoop
         mode: '2755'
 
+    - name: Remove .hdfs-formatted
+      file:
+        path: '{{ hadoop_home }}/etc/.hdfs-formatted'
+        state: absent
+      when: force_format_hdfs | default(False)
+
     - name: Format HDFS (if not formatted)
       become_user: hadoop
       shell:
         cmd: >-
-          {{ hadoop_home | quote }}/bin/hdfs namenode -format -nonInteractive \
+          {{ hadoop_home }}/sbin/stop-dfs.sh;
+          {{ hadoop_home | quote }}/bin/hdfs namenode -format {{
+            '-force' if force_format_hdfs | default(False) else '-nonInteractive'
+          }}
           && touch {{ hadoop_home | quote }}/etc/.hdfs-formatted
-        creates: "{{ hadoop_home }}/etc/.hdfs-formatted"
+          && rm -f {{ hadoop_home | quote }}/etc/.hdfs-acl-set
+        creates: '{{ hadoop_home }}/etc/.hdfs-formatted'
+
+
+    - name: Give all users RWX on HDFS (if not set)
+      become_user: hadoop
+      shell:
+        cmd: >-
+          {{ hadoop_home }}/sbin/start-dfs.sh
+          && {{ hadoop_home | quote }}/bin/hdfs dfs -setfacl -R -m other::rwx /
+          && {{ hadoop_home | quote }}/bin/hdfs dfs -setfacl -R -m default:other::rwx /
+          && touch {{ hadoop_home | quote }}/etc/.hdfs-formatted
+          && {{ hadoop_home }}/sbin/stop-dfs.sh
+        creates: '{{ hadoop_home }}/etc/.hdfs-acl-set'
